@@ -1,0 +1,32 @@
+Castle
+Captured Knight
+Captured Knight
+Captured Pawn
+Captured Pawn
+Captured Knight
+Captured Bishop
+Captured Pawn
+Captured Pawn
+Captured Knight
+Captured Bishop
+Captured Rook
+Captured Rook
+Captured Pawn
+Captured Pawn
+Captured Pawn
+Captured Bishop
+Captured Bishop
+Captured Queen
+Captured Queen
+Captured Pawn
+Captured Pawn
+White in check
+Captured Pawn
+Black in check
+Captured Pawn
+White in check
+White in check
+White in check
+Captured Pawn
+Black in check
+Black in check

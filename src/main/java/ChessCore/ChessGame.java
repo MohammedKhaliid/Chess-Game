@@ -94,7 +94,7 @@ public class ChessGame {
         return true;
     }
 
-    private char[][] allValidMoves(Piece p, boolean test) {
+    public char[][] allValidMoves(Piece p, boolean test) {
         char[][] all = generateBoard();
         int[] pieceCoordinates = Calculations.calcPosition(p.getPosition());
         int column = pieceCoordinates[0];
@@ -590,9 +590,11 @@ public class ChessGame {
 
         return ret;
     }
-//    public Piece getPiece(int i, int j) {
-//        return board[i][j];
-//    }
+
+    public Piece getPiece(int i, int j) {
+        return board[i][j];
+    }
+    
 //    private void printBoard() {
 //        for (int i = 7; i >= 0; i--) {
 //            for (int j = 0; j < 8; j++) {
