@@ -70,7 +70,7 @@ public class ChessGame {
                     if (black[j][i].getIsCaptured()) {
                         continue;
                     }
-                    char[][] danger = this.allValidMoves(black[j][i], true);
+                    char[][] danger = this.getAllValidMoves(black[j][i], true);
                     int[] whiteKingCoordinates = Calculations.calcPosition(white[0][4].getPosition());
                     if (danger[whiteKingCoordinates[1]][whiteKingCoordinates[0]] == 't') {
                         return false;
@@ -83,7 +83,7 @@ public class ChessGame {
                     if (white[j][i].getIsCaptured()) {
                         continue;
                     }
-                    char[][] danger = this.allValidMoves(white[j][i], true);
+                    char[][] danger = this.getAllValidMoves(white[j][i], true);
                     int[] blackKingCoordinates = Calculations.calcPosition(black[0][4].getPosition());
                     if (danger[blackKingCoordinates[1]][blackKingCoordinates[0]] == 't') {
                         return false;
@@ -94,7 +94,7 @@ public class ChessGame {
         return true;
     }
 
-    private char[][] allValidMoves(Piece p, boolean test) {
+    public char[][] getAllValidMoves(Piece p, boolean test) {
         char[][] all = generateBoard();
         int[] pieceCoordinates = Calculations.calcPosition(p.getPosition());
         int column = pieceCoordinates[0];
@@ -342,7 +342,7 @@ public class ChessGame {
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 8; j++) {
                 if (piece[i][j].getIsCaptured() == false) {
-                    ithBoard = allValidMoves(piece[i][j], false);
+                    ithBoard = getAllValidMoves(piece[i][j], false);
                 }
 
                 for (int k = 0; k < 8; k++) {
@@ -482,7 +482,7 @@ public class ChessGame {
             if (movingPiece == null || !movingPiece.isValidMove(from, to) || capturedPiece instanceof King || (whiteTurn && !movingPiece.getColor()) || (!whiteTurn && movingPiece.getColor())) {
                 ret = "Invalid move\n";
             } else {
-                canMoveToBoard = allValidMoves(movingPiece, false);
+                canMoveToBoard = getAllValidMoves(movingPiece, false);
                 if (canMoveToBoard[toRow][toColumn] == 'f') {
                     ret = "invalid move\n";
                 } else if (capturedPiece != null || (capturedPiece == null && (canMoveToBoard[toRow][toColumn] == 'e' || canMoveToBoard[toRow][toColumn] == 'r' || canMoveToBoard[toRow][toColumn] == 'l'))) {
@@ -543,7 +543,7 @@ public class ChessGame {
             if (movingPiece == null || !movingPiece.isValidMove(from, to) || capturedPiece instanceof King || (toRow != 7 && toRow != 0)) {
                 ret = "Invalid move\n";
             } else {
-                canMoveToBoard = allValidMoves(movingPiece, false);
+                canMoveToBoard = getAllValidMoves(movingPiece, false);
                 if (canMoveToBoard[toRow][toColumn] == 'f') {
                     ret = "Invalid move\n";
                 } else {
@@ -590,9 +590,11 @@ public class ChessGame {
 
         return ret;
     }
-//    public Piece getPiece(int i, int j) {
-//        return board[i][j];
-//    }
+
+    public Piece getPiece(int i, int j) {
+        return board[i][j];
+    }
+    
 //    private void printBoard() {
 //        for (int i = 7; i >= 0; i--) {
 //            for (int j = 0; j < 8; j++) {

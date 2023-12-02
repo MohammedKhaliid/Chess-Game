@@ -42,7 +42,7 @@ public class ChessClient {
 
     public static void main(String[] args) {
 
-        runGame("D:\\Programming\\Java\\Java University\\Lab7\\ChessGame.txt", "D:\\Programming\\Java\\Java University\\Lab7\\Output.txt");
+        runGame("ChessGame.txt", "Output.txt");
 
     }
 }
