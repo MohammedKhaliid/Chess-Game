@@ -93,7 +93,6 @@ public class ChessGameBoard extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
-        setPreferredSize(new java.awt.Dimension(600, 600));
         setResizable(false);
 
         p5.setBackground(new java.awt.Color(255, 228, 178));
@@ -1534,8 +1533,6 @@ public class ChessGameBoard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel17;
-    private javax.swing.JPanel jPanel18;
     private javax.swing.JPanel p1;
     private javax.swing.JPanel p10;
     private javax.swing.JPanel p11;
