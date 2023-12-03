@@ -7,6 +7,7 @@ package Frontend;
 import ChessCore.*;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -68,7 +69,8 @@ public class ChessGUI {
         JPanel board;
         board = new JPanel(new GridLayout()) {
             @Override
-            public void paint(Graphics graphic) {
+            public void paint(Graphics graphic1d) {
+                Graphics2D graphic = (Graphics2D) graphic1d;
                 for (int i = 0; i < 8; i++) {
                     for (int j = 0; j < 8; j++) {
                         if ((i + j) % 2 == 0) {
@@ -77,7 +79,15 @@ public class ChessGUI {
                             graphic.setColor(blackColor);
                         }
                         graphic.fillRect((i * 75), (j * 75), sideLength, sideLength);
+                        if (chessBoard.getCurrentRow() != -1 && chessBoard.getCurrentColumn() != -1) {
+                            graphic.setColor(new Color(147,196,125));
+                            graphic.fillRect((chessBoard.getCurrentRow() * 75), (chessBoard.getCurrentColumn() * 75), sideLength, sideLength);
 
+                        }
+                    }
+                }
+                for (int i = 0; i < 8; i++) {
+                    for (int j = 0; j < 8; j++) {
                         Piece p = game.getPiece(7 - j, i);
                         if (p != null) {
                             Image image;
@@ -120,13 +130,7 @@ public class ChessGUI {
                                 }
                             }
 
-                            if (chessBoard.getCurrentRow() != -1 && chessBoard.getCurrentColumn() != -1) {
-                                graphic.setColor(Color.BLUE);
-                                graphic.fillRect((chessBoard.getCurrentRow() * 75), (chessBoard.getCurrentColumn() * 75), sideLength, sideLength);
-                                
-                            }
-                            
-                            image = Toolkit.getDefaultToolkit().getImage("D:\\Programming\\Java\\Java University\\Lab8\\src\\main\\java\\Images\\" + pieceImage + ".png");                            
+                            image = Toolkit.getDefaultToolkit().getImage("D:\\Programming\\Java\\Java University\\Lab8\\src\\main\\java\\Images\\" + pieceImage + ".png");
                             graphic.drawImage(image, (i * 75), (j * 75), 75, 75, this);
 
                         }
@@ -138,21 +142,21 @@ public class ChessGUI {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (chessBoard.getCurrentRow() == -1 ||  chessBoard.getCurrentColumn() == -1) {
+                if (chessBoard.getCurrentRow() == -1 || chessBoard.getCurrentColumn() == -1) {
                     System.out.println(" from ");
-                    
+
                     chessBoard.setCurrentRow(e.getX() / sideLength);
                     chessBoard.setCurrentColumn(e.getY() / sideLength);
-                    
+
                     //all possible moves/////////////////////////////////////////
                     chess.repaint();
                 } else {
                     System.out.println(" to ");
-                    chessBoard.moveGUI(Calculations.reverseCalcPosition(7 -  chessBoard.getCurrentColumn(), chessBoard.getCurrentRow()), Calculations.reverseCalcPosition(7 - e.getY() / sideLength, e.getX() / sideLength));
-                    
+                    chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentColumn(), chessBoard.getCurrentRow()), Calculations.reverseCalcPosition(7 - e.getY() / sideLength, e.getX() / sideLength));
+
                     chessBoard.setCurrentRow(-1);
                     chessBoard.setCurrentColumn(-1);
-                    
+
                     chess.repaint();
                 }
             }
