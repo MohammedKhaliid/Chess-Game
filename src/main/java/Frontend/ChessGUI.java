@@ -36,13 +36,14 @@ public class ChessGUI {
     public static void main(String[] args) {
         ChessGUI chessBoard = new ChessGUI();
         ChessGame game = chessBoard.getGame();
+        
         JFrame chess = new JFrame();
         chess.setSize(600, 600);
         chess.setUndecorated(true);
         chess.setLocationRelativeTo(null);
         Color whiteColor = new Color(255, 228, 178);
         Color blackColor = new Color(151, 119, 84);
-
+        chess.setUndecorated(false);
 //        chess.getContentPane().setBackground(Color.red);
         JPanel board;
         board = new JPanel(new GridLayout()) {
@@ -100,9 +101,8 @@ public class ChessGUI {
                                     pieceImage = "BlackKing";
                                 }
                             }
-                            image = Toolkit.getDefaultToolkit().getImage("E:/UNI/Term 5/Lab8/src/main/java/Images/" + pieceImage + ".png");
+                            image = Toolkit.getDefaultToolkit().getImage("D:\\Programming\\Java\\Java University\\Lab8\\src\\main\\java\\Images\\" + pieceImage + ".png");
                             graphic.drawImage(image, (i * 75), (j * 75), 75, 75, this);
-
                         }
                     }
                 }
@@ -115,14 +115,14 @@ public class ChessGUI {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (initialRow == -1 || initialColumn == -1) {
-                    System.out.println("kkkkkkkkk");
+                    System.out.println(" from ");
                     initialRow = e.getX() / sideLength;
                     initialColumn = e.getY() / sideLength;
                     //all possible moves/////////////////////////////////////////
                     chess.repaint();
                 } else {
-                    System.out.println("llllll");
-                    chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - initialRow, initialColumn), Calculations.reverseCalcPosition(7 - e.getX() / sideLength, e.getY() / sideLength));
+                    System.out.println(" to ");
+                    chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - initialColumn, initialRow), Calculations.reverseCalcPosition(7 - e.getY() / sideLength,  e.getX()/ sideLength));
                     initialRow = -1;
                     initialColumn = -1;
                     chess.repaint();
@@ -156,7 +156,7 @@ public class ChessGUI {
 
     public void moveGUI(String from, String to, char promoteTo) {
         String state = game.move(from, to, promoteTo);
-
+        System.out.println(state);
     }
 
     public void moveGUI(String from, String to) {

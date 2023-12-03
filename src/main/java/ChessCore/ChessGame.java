@@ -484,7 +484,7 @@ public class ChessGame {
             } else {
                 canMoveToBoard = allValidMoves(movingPiece, false);
                 if (canMoveToBoard[toRow][toColumn] == 'f') {
-                    ret = "invalid move\n";
+                    ret = "Invalid move\n";
                 } else if (capturedPiece != null || (capturedPiece == null && (canMoveToBoard[toRow][toColumn] == 'e' || canMoveToBoard[toRow][toColumn] == 'r' || canMoveToBoard[toRow][toColumn] == 'l'))) {
 
                     if (canMoveToBoard[toRow][toColumn] == 'e') {
@@ -564,7 +564,7 @@ public class ChessGame {
             lastMoved[1] = toColumn;
             whiteTurn = !whiteTurn;
         } else {
-//            printBoard();
+            printBoard();
             return ret;
         }
 
@@ -586,7 +586,7 @@ public class ChessGame {
             ret += "Black in check\n";
         }
 
-//        printBoard();
+        printBoard();
 
         return ret;
     }
@@ -595,18 +595,18 @@ public class ChessGame {
         return board[i][j];
     }
     
-//    private void printBoard() {
-//        for (int i = 7; i >= 0; i--) {
-//            for (int j = 0; j < 8; j++) {
-//                if (board[i][j] != null) {
-//                    System.out.print(board[i][j] + "\t");
-//                } else {
-//                    System.out.print("null\t");
-//                }
-//            }
-//            System.out.println("");
-//        }
-//        System.out.println("------------------------------------------------");
-//    }
+    private void printBoard() {
+        for (int i = 7; i >= 0; i--) {
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j] != null) {
+                    System.out.print(board[i][j] + "\t");
+                } else {
+                    System.out.print("null\t");
+                }
+            }
+            System.out.println("");
+        }
+        System.out.println("------------------------------------------------");
+    }
 
     }
