@@ -23,20 +23,40 @@ import testing.ChessGameBoard;
 public class ChessGUI {
 
     public static final int sideLength = 75;
-    ChessGame game;
+    private ChessGame game;
+    private int currentRow;
+    private int currentColumn;
 
     public ChessGUI() {
         this.game = new ChessGame();
+        currentRow = -1;
+        currentColumn = -1;
+    }
+
+    public int getCurrentRow() {
+        return currentRow;
+    }
+
+    public int getCurrentColumn() {
+        return currentColumn;
     }
 
     public ChessGame getGame() {
         return this.game;
     }
 
+    public void setCurrentColumn(int currentColumn) {
+        this.currentColumn = currentColumn;
+    }
+
+    public void setCurrentRow(int currentRow) {
+        this.currentRow = currentRow;
+    }
+
     public static void main(String[] args) {
         ChessGUI chessBoard = new ChessGUI();
         ChessGame game = chessBoard.getGame();
-        
+
         JFrame chess = new JFrame();
         chess.setSize(600, 600);
         chess.setUndecorated(true);
@@ -68,7 +88,6 @@ public class ChessGUI {
                                 } else {
                                     pieceImage = "BlackPawn";
                                 }
-
                             } else if (p instanceof Rook) {
                                 if (p.getColor()) {
                                     pieceImage = "WhiteRook";
@@ -87,7 +106,6 @@ public class ChessGUI {
                                 } else {
                                     pieceImage = "BlackBishop";
                                 }
-
                             } else if (p instanceof Queen) {
                                 if (p.getColor()) {
                                     pieceImage = "WhiteQueen";
@@ -101,30 +119,40 @@ public class ChessGUI {
                                     pieceImage = "BlackKing";
                                 }
                             }
-                            image = Toolkit.getDefaultToolkit().getImage("D:\\Programming\\Java\\Java University\\Lab8\\src\\main\\java\\Images\\" + pieceImage + ".png");
+
+                            if (chessBoard.getCurrentRow() != -1 && chessBoard.getCurrentColumn() != -1) {
+                                graphic.setColor(Color.BLUE);
+                                graphic.fillRect((chessBoard.getCurrentRow() * 75), (chessBoard.getCurrentColumn() * 75), sideLength, sideLength);
+                                
+                            }
+                            
+                            image = Toolkit.getDefaultToolkit().getImage("D:\\Programming\\Java\\Java University\\Lab8\\src\\main\\java\\Images\\" + pieceImage + ".png");                            
                             graphic.drawImage(image, (i * 75), (j * 75), 75, 75, this);
+
                         }
                     }
                 }
             }
         };
         MouseListener mouse = new MouseListener() {
-            int initialRow = -1;
-            int initialColumn = -1;
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (initialRow == -1 || initialColumn == -1) {
+                if (chessBoard.getCurrentRow() == -1 ||  chessBoard.getCurrentColumn() == -1) {
                     System.out.println(" from ");
-                    initialRow = e.getX() / sideLength;
-                    initialColumn = e.getY() / sideLength;
+                    
+                    chessBoard.setCurrentRow(e.getX() / sideLength);
+                    chessBoard.setCurrentColumn(e.getY() / sideLength);
+                    
                     //all possible moves/////////////////////////////////////////
                     chess.repaint();
                 } else {
                     System.out.println(" to ");
-                    chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - initialColumn, initialRow), Calculations.reverseCalcPosition(7 - e.getY() / sideLength,  e.getX()/ sideLength));
-                    initialRow = -1;
-                    initialColumn = -1;
+                    chessBoard.moveGUI(Calculations.reverseCalcPosition(7 -  chessBoard.getCurrentColumn(), chessBoard.getCurrentRow()), Calculations.reverseCalcPosition(7 - e.getY() / sideLength, e.getX() / sideLength));
+                    
+                    chessBoard.setCurrentRow(-1);
+                    chessBoard.setCurrentColumn(-1);
+                    
                     chess.repaint();
                 }
             }
