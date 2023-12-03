@@ -126,7 +126,7 @@ public class ChessGUI {
                                 
                             }
                             
-                            image = Toolkit.getDefaultToolkit().getImage("D:\\Programming\\Java\\Java University\\Lab8\\src\\main\\java\\Images\\" + pieceImage + ".png");                            
+                            image = Toolkit.getDefaultToolkit().getImage("E:\\UNI\\Term 5\\Lab8\\src\\main\\java\\Images\\" + pieceImage + ".png");                            
                             graphic.drawImage(image, (i * 75), (j * 75), 75, 75, this);
 
                         }
