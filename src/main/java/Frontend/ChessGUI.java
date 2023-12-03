@@ -6,13 +6,19 @@ package Frontend;
 
 import ChessCore.*;
 import java.awt.Color;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.RadialGradientPaint;
+import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import testing.ChessGameBoard;
@@ -80,12 +86,28 @@ public class ChessGUI {
                         }
                         graphic.fillRect((i * 75), (j * 75), sideLength, sideLength);
                         if (chessBoard.getCurrentRow() != -1 && chessBoard.getCurrentColumn() != -1) {
-                            graphic.setColor(new Color(147,196,125));
-                            graphic.fillRect((chessBoard.getCurrentRow() * 75), (chessBoard.getCurrentColumn() * 75), sideLength, sideLength);
+//                            graphic.setColor(new Color(147,196,125));
+//                            graphic.fillRect((chessBoard.getCurrentRow() * 75), (chessBoard.getCurrentColumn() * 75), sideLength, sideLength);
+//                            GradientPaint gradient = new GradientPaint(0, 0, Color.RED, 75, 75, Color.WHITE);
 
+                            Point2D center = new Point2D.Float( 75/ 2, 75/ 2);
+                            float radius = 75;
+                            Color[] colors = {new Color(0,0,0,0), new Color(88,117,75)};
+                            float[] dist = {0.5f, 1.0f};
+                            RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
+                            Shape rect = new Rectangle2D.Double(0, 0, 75, 75);
+
+                            // Fill the oval with the radial gradient
+                            // Set the paint to the graphics context
+                            graphic.setPaint(gradient);
+
+                            // Fill a rectangle with the gradient
+                            graphic.fill(new Rectangle2D.Double(0, 0, 75, 75));
                         }
+
                     }
                 }
+
                 for (int i = 0; i < 8; i++) {
                     for (int j = 0; j < 8; j++) {
                         Piece p = game.getPiece(7 - j, i);
@@ -181,9 +203,13 @@ public class ChessGUI {
 //                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
             }
         };
-        chess.getContentPane().addMouseListener(mouse);
+
+        chess.getContentPane()
+                .addMouseListener(mouse);
         chess.add(board);
-        chess.setVisible(true);
+
+        chess.setVisible(
+                true);
     }
 
     public void moveGUI(String from, String to, char promoteTo) {
