@@ -101,7 +101,6 @@ public class ChessGameBoard0 extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(600, 600));
         setUndecorated(true);
-        setPreferredSize(new java.awt.Dimension(600, 600));
         setResizable(false);
 
         jPanel1.setPreferredSize(new java.awt.Dimension(600, 600));
