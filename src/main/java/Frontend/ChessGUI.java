@@ -359,6 +359,9 @@ public class ChessGUI {
                             chessBoard.setIsPromoting(false);
                             chess.repaint();
                         } else {
+                            chessBoard.setCurrentRow(-1);
+                            chessBoard.setCurrentColumn(-1);
+                            chessBoard.setIsPromoting(false);
                             chess.repaint();
                         }
                     }
