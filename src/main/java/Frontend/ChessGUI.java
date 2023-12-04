@@ -205,7 +205,7 @@ public class ChessGUI {
                                 }
 
                             }
-                            image = Toolkit.getDefaultToolkit().getImage("D:\\Programming\\Java\\Java University\\Lab8\\PiecesImages\\" + pieceImage + ".png");
+                            image = Toolkit.getDefaultToolkit().getImage("PiecesImages\\" + pieceImage + ".png");
                             graphic.drawImage(image, (i * 75), (j * 75), 75, 75, this);
 
                         }
@@ -216,7 +216,7 @@ public class ChessGUI {
                     Image image;
                     if (game.getTurn()) {
                         for (int i = 0; i < 4; i++) {
-                            image = Toolkit.getDefaultToolkit().getImage("D:\\Programming\\Java\\Java University\\Lab8\\PiecesImages\\White" + pieces[i] + ".png");
+                            image = Toolkit.getDefaultToolkit().getImage("PiecesImages\\White" + pieces[i] + ".png");
                             Point2D center = new Point2D.Float((chessBoard.getPromotionColumn() * 75) + 75 / 2, ((chessBoard.getPromotionRow() + i) * 75) + 75 / 2);
                             float radius = 75 / 2 + 12;
                             Color[] colors = {new Color(175, 175, 175), new Color(0, 0, 0, 0)};
@@ -228,7 +228,7 @@ public class ChessGUI {
                         }
                     } else {
                         for (int i = 0; i < 4; i++) {
-                            image = Toolkit.getDefaultToolkit().getImage("D:\\Programming\\Java\\Java University\\Lab8\\PiecesImages\\Black" + pieces[i] + ".png");
+                            image = Toolkit.getDefaultToolkit().getImage("PiecesImages\\Black" + pieces[i] + ".png");
                             Point2D center = new Point2D.Float((chessBoard.getPromotionColumn() * 75) + 75 / 2, ((chessBoard.getPromotionRow() - i) * 75) + 75 / 2);
                             float radius = 75 / 2 + 12;
                             Color[] colors = {new Color(175, 175, 175), new Color(0, 0, 0, 0)};
