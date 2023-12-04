@@ -305,7 +305,7 @@ public class ChessGUI {
                         int r = 7 - e.getY() / sideLength;
                         int c = e.getX() / sideLength;
                         char prom = 'x';
-                        if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 7) {
+                        if (c == chessBoard.getPromotionColumn() && r == 7) {
                             prom = 'q';
                             if (game.getTurn()) {
                                 chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
@@ -319,7 +319,7 @@ public class ChessGUI {
                             chessBoard.setCurrentColumn(-1);
                             chessBoard.setIsPromoting(false);
                             chess.repaint();
-                        } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 6) {
+                        } else if (c == chessBoard.getPromotionColumn() && r == 6) {
                             prom = 'k';
                             if (game.getTurn()) {
                                 chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
@@ -332,7 +332,7 @@ public class ChessGUI {
                             chessBoard.setCurrentColumn(-1);
                             chessBoard.setIsPromoting(false);
                             chess.repaint();
-                        } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 5) {
+                        } else if (c == chessBoard.getPromotionColumn() && r == 5) {
                             prom = 'r';
                             if (game.getTurn()) {
                                 chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
@@ -345,7 +345,7 @@ public class ChessGUI {
                             chessBoard.setCurrentColumn(-1);
                             chessBoard.setIsPromoting(false);
                             chess.repaint();
-                        } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 4) {
+                        } else if (c == chessBoard.getPromotionColumn() && r == 4) {
                             prom = 'b';
                             if (game.getTurn()) {
                                 chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
