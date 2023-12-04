@@ -88,7 +88,7 @@ public class ChessGUI {
         chess.setSize(616, 616);
         chess.setLocationRelativeTo(null);
         Color whiteColor = new Color(255, 228, 178);
-        Color blackColor = new Color(12,52,61);
+        Color blackColor = new Color(12, 52, 61);
         chess.setUndecorated(true);
 
         JPanel board;
@@ -229,9 +229,8 @@ public class ChessGUI {
                                 }
 
                             }
-                            image = Toolkit.getDefaultToolkit().getImage("D:\\Programming\\Java\\Java University\\Lab8\\PiecesImages\\" + pieceImage + ".png");
+                            image = Toolkit.getDefaultToolkit().getImage("PiecesImages\\" + pieceImage + ".png");
                             graphic.drawImage(image, (i * 75), (j * 75), 75, 75, this);
-
                         }
                     }
                 }
@@ -240,9 +239,9 @@ public class ChessGUI {
                     Image image;
                     for (int i = 0; i < 4; i++) {
                         if (game.getTurn()) {
-                            image = Toolkit.getDefaultToolkit().getImage("E:\\UNI\\Term 5\\Lab8\\src\\main\\java\\Images\\White" + pieces[i] + ".png");
+                            image = Toolkit.getDefaultToolkit().getImage("PiecesImages\\White" + pieces[i] + ".png");
                         } else {
-                            image = Toolkit.getDefaultToolkit().getImage("E:\\UNI\\Term 5\\Lab8\\src\\main\\java\\Images\\Black" + pieces[i] + ".png");
+                            image = Toolkit.getDefaultToolkit().getImage("PiecesImages\\Black" + pieces[i] + ".png");
                         }
                         Point2D center = new Point2D.Float((chessBoard.getPromotionColumn() * 75) + 75 / 2, ((chessBoard.getPromotionRow() + i) * 75) + 75 / 2);
                         float radius = 75 / 2 + 12;
