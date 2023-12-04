@@ -90,13 +90,16 @@ public class ChessGUI {
         Color whiteColor = new Color(255, 228, 178);
         Color blackColor = new Color(12,52,61);
         chess.setUndecorated(true);
+
         JPanel board;
+
         board = new JPanel(new GridLayout()) {
             @Override
             public void paint(Graphics graphic1d) {
                 Graphics2D graphic = (Graphics2D) graphic1d;
                 graphic.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 graphic.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+
                 for (int i = 0; i < 8; i++) {
                     for (int j = 0; j < 8; j++) {
                         if ((i + j) % 2 == 0) {
@@ -155,8 +158,10 @@ public class ChessGUI {
                                 }
                             }
                         }
+
                     }
                 }
+
                 for (int i = 0; i < 8; i++) {
                     for (int j = 0; j < 8; j++) {
                         Piece p;
@@ -224,7 +229,7 @@ public class ChessGUI {
                                 }
 
                             }
-                            image = Toolkit.getDefaultToolkit().getImage("E:\\UNI\\Term 5\\Lab8\\src\\main\\java\\Images\\" + pieceImage + ".png");
+                            image = Toolkit.getDefaultToolkit().getImage("D:\\Programming\\Java\\Java University\\Lab8\\PiecesImages\\" + pieceImage + ".png");
                             graphic.drawImage(image, (i * 75), (j * 75), 75, 75, this);
 
                         }
