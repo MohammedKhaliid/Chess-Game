@@ -53,6 +53,10 @@ public class ChessGame {
     {
         return whiteTurn;
     }
+    public boolean getGameOver()
+    {
+        return gameOver;
+    }
 
     public static char[][] generateBoard() {
         char[][] x = new char[8][8];

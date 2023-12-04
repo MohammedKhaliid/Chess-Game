@@ -1,34 +1,24 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Frontend;
 
 import ChessCore.*;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import javafx.scene.input.KeyCode;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import testing.ChessGameBoard;
+import javax.swing.border.Border;
 
-/**
- *
- * @author eiada
- */
 public class ChessGUI {
 
     public static final int sideLength = 75;
@@ -95,10 +85,10 @@ public class ChessGUI {
         ChessGame game = chessBoard.getGame();
 
         JFrame chess = new JFrame();
-        chess.setSize(600, 600);
+        chess.setSize(616, 616);
         chess.setLocationRelativeTo(null);
         Color whiteColor = new Color(255, 228, 178);
-        Color blackColor = new Color(78, 55, 62);
+        Color blackColor = new Color(12,52,61);
         chess.setUndecorated(true);
         JPanel board;
         board = new JPanel(new GridLayout()) {
@@ -117,9 +107,15 @@ public class ChessGUI {
                         graphic.fillRect((i * 75), (j * 75), sideLength, sideLength);
 
                         if (chessBoard.getCurrentRow() != -1 && chessBoard.getCurrentColumn() != -1) {
-                            Piece selectedPiece = game.getPiece(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn());
 
-                            if (selectedPiece != null && selectedPiece.getColor() == game.getTurn()) {
+                            Piece selectedPiece;
+                            if (game.getTurn()) {
+                                selectedPiece = game.getPiece(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn());
+                            } else {
+                                selectedPiece = game.getPiece(chessBoard.getCurrentRow(), 7 - chessBoard.getCurrentColumn());
+                            }
+
+                            if (selectedPiece != null && selectedPiece.getColor() == game.getTurn() && !game.getGameOver()) {
 
                                 graphic.setColor(new Color(88, 117, 75));
                                 graphic.fillRect((chessBoard.getCurrentColumn() * 75), (chessBoard.getCurrentRow() * 75), sideLength, sideLength);
@@ -131,15 +127,28 @@ public class ChessGUI {
                                         if (validMoves[7 - m][k] != 'f') {
                                             if (game.getPiece(7 - m, k) == null) {
                                                 graphic.setColor(new Color(104, 130, 93));
-                                                graphic.fillOval((k * 75) + 25, (m * 75) + 25, 25, 25);
+                                                if (game.getTurn()) {
+                                                    graphic.fillOval((k * 75) + 25, (m * 75) + 25, 25, 25);
+                                                } else {
+                                                    graphic.fillOval(((7 - k) * 75) + 25, ((7 - m) * 75) + 25, 25, 25);
+                                                }
                                             } else {
-                                                Point2D center = new Point2D.Float((k * 75) + 75 / 2, (m * 75) + 75 / 2);
+                                                Point2D center;
+                                                if (game.getTurn()) {
+                                                    center = new Point2D.Float((k * 75) + 75 / 2, (m * 75) + 75 / 2);
+                                                } else {
+                                                    center = new Point2D.Float(((7 - k) * 75) + 75 / 2, ((7 - m) * 75) + 75 / 2);
+                                                }
                                                 float radius = 75;
                                                 Color[] colors = {new Color(0, 0, 0, 0), new Color(88, 117, 75)};
                                                 float[] dist = {0.5f, 1.0f};
                                                 RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
                                                 graphic.setPaint(gradient);
-                                                graphic.fill(new Rectangle2D.Double((k * 75), (m * 75), 75, 75));
+                                                if (game.getTurn()) {
+                                                    graphic.fill(new Rectangle2D.Double((k * 75), (m * 75), 75, 75));
+                                                } else {
+                                                    graphic.fill(new Rectangle2D.Double(((7 - k) * 75), ((7 - m) * 75), 75, 75));
+                                                }
                                             }
                                         }
                                     }
@@ -150,7 +159,12 @@ public class ChessGUI {
                 }
                 for (int i = 0; i < 8; i++) {
                     for (int j = 0; j < 8; j++) {
-                        Piece p = game.getPiece(7 - j, i);
+                        Piece p;
+                        if (game.getTurn()) {
+                            p = game.getPiece(7 - j, i);
+                        } else {
+                            p = game.getPiece(j, 7 - i);
+                        }
                         if (p != null) {
                             Image image;
                             String pieceImage = "";
@@ -199,13 +213,13 @@ public class ChessGUI {
                                 } else {
                                     pieceImage = "BlackKing";
                                     if (!game.isKingSafe('w')) {
-                                        Point2D center = new Point2D.Float((i * 75) + 75 / 2, (j * 75) + 75 / 2);
+                                        Point2D center = new Point2D.Float(((i) * 75) + 75 / 2, ((j) * 75) + 75 / 2);
                                         float radius = 75 / 2 + 10;
                                         Color[] colors = {new Color(255, 0, 0), new Color(0, 0, 0, 0)};
                                         float[] dist = {0.5f, 1.0f};
                                         RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
                                         graphic.setPaint(gradient);
-                                        graphic.fill(new Rectangle2D.Double((i * 75), (j * 75), 75, 75));
+                                        graphic.fill(new Rectangle2D.Double(((i) * 75), ((j) * 75), 75, 75));
                                     }
                                 }
 
@@ -219,34 +233,36 @@ public class ChessGUI {
                 if (chessBoard.getIsPromoting() == true) {
                     String[] pieces = new String[]{"Queen", "Knight", "Rook", "Bishop"};
                     Image image;
-                    if (game.getTurn()) {
-                        for (int i = 0; i < 4; i++) {
+
+                    for (int i = 0; i < 4; i++) {
+                        if (game.getTurn()) {
                             image = Toolkit.getDefaultToolkit().getImage("E:\\UNI\\Term 5\\Lab8\\src\\main\\java\\Images\\White" + pieces[i] + ".png");
-                            Point2D center = new Point2D.Float((chessBoard.getPromotionColumn() * 75) + 75 / 2, ((chessBoard.getPromotionRow() + i) * 75) + 75 / 2);
-                            float radius = 75 / 2 + 12;
-                            Color[] colors = {new Color(175,175,175), new Color(0, 0, 0, 0)};
-                            float[] dist = {0.5f, 1.0f};
-                            RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
-                            graphic.setPaint(gradient);
-                            graphic.fill(new Ellipse2D.Double((chessBoard.getPromotionColumn() * 75), ((chessBoard.getPromotionRow() + i) * 75), 75, 75));
-                            graphic.drawImage(image, (chessBoard.getPromotionColumn() * 75), ((chessBoard.getPromotionRow() + i) * 75), 75, 75, this);
-                        }
-                    } else {
-                        for (int i = 0; i < 4; i++) {
+                        } else {
                             image = Toolkit.getDefaultToolkit().getImage("E:\\UNI\\Term 5\\Lab8\\src\\main\\java\\Images\\Black" + pieces[i] + ".png");
-                            Point2D center = new Point2D.Float((chessBoard.getPromotionColumn() * 75) + 75 / 2, ((chessBoard.getPromotionRow() - i) * 75) + 75 / 2);
-                            float radius = 75 / 2 + 12;
-                            Color[] colors = {new Color(175,175,175), new Color(0, 0, 0, 0)};
-                            float[] dist = {0.5f, 1.0f};
-                            RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
-                            graphic.setPaint(gradient);
-                            graphic.fill(new Ellipse2D.Double((chessBoard.getPromotionColumn() * 75), ((chessBoard.getPromotionRow() - i) * 75), 75, 75));
-                            graphic.drawImage(image, (chessBoard.getPromotionColumn() * 75), ((chessBoard.getPromotionRow() - i) * 75), 75, 75, this);
                         }
+                        Point2D center = new Point2D.Float((chessBoard.getPromotionColumn() * 75) + 75 / 2, ((chessBoard.getPromotionRow() + i) * 75) + 75 / 2);
+                        float radius = 75 / 2 + 12;
+                        Color[] colors = {new Color(175, 175, 175), new Color(0, 0, 0, 0)};
+                        float[] dist = {0.5f, 1.0f};
+                        RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
+                        graphic.setPaint(gradient);
+                        graphic.fill(new Ellipse2D.Double((chessBoard.getPromotionColumn() * 75), ((chessBoard.getPromotionRow() + i) * 75), 75, 75));
+                        graphic.drawImage(image, (chessBoard.getPromotionColumn() * 75), ((chessBoard.getPromotionRow() + i) * 75), 75, 75, this);
                     }
-
+//                     else {
+//                        for (int i = 0; i < 4; i++) {
+//                            image = Toolkit.getDefaultToolkit().getImage("E:\\UNI\\Term 5\\Lab8\\src\\main\\java\\Images\\Black" + pieces[i] + ".png");
+//                            Point2D center = new Point2D.Float(((7 - chessBoard.getPromotionColumn()) * 75) + 75 / 2, ((7 - (chessBoard.getPromotionRow() - i)) * 75) + 75 / 2);
+//                            float radius = 75 / 2 + 12;
+//                            Color[] colors = {new Color(175, 175, 175), new Color(0, 0, 0, 0)};
+//                            float[] dist = {0.5f, 1.0f};
+//                            RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
+//                            graphic.setPaint(gradient);
+//                            graphic.fill(new Ellipse2D.Double(((7 - chessBoard.getPromotionColumn()) * 75), ((7 - (chessBoard.getPromotionRow() - i)) * 75), 75, 75));
+//                            graphic.drawImage(image, ((7 - chessBoard.getPromotionColumn()) * 75), ((7 - (chessBoard.getPromotionRow() - i)) * 75), 75, 75, this);
+//                        }
+//                    }
                 }
-
             }
         };
         MouseListener mouse = new MouseListener() {
@@ -259,27 +275,39 @@ public class ChessGUI {
                 if (chessBoard.getCurrentRow() == -1 || chessBoard.getCurrentColumn() == -1) {
                     chessBoard.setCurrentRow(e.getY() / sideLength);
                     chessBoard.setCurrentColumn(e.getX() / sideLength);
-                    selectedPiece = game.getPiece(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn());
+                    if (game.getTurn()) {
+                        selectedPiece = game.getPiece(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn());
+                    } else {
+                        selectedPiece = game.getPiece(chessBoard.getCurrentRow(), 7 - chessBoard.getCurrentColumn());
+                    }
                     if (selectedPiece != null) {
                         validMoves = game.allValidMoves(selectedPiece, false);
                     }
                     chess.repaint();
                 } else {
-
-                    selectedPiece = game.getPiece(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn());
+                    if (game.getTurn()) {
+                        selectedPiece = game.getPiece(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn());
+                    } else {
+                        selectedPiece = game.getPiece(chessBoard.getCurrentRow(), 7 - chessBoard.getCurrentColumn());
+                    }
                     if (selectedPiece != null) {
                         validMoves = game.allValidMoves(selectedPiece, false);
                     }
-                    if ((selectedPiece = game.getPiece(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn())) instanceof Pawn && chessBoard.getIsPromoting() == false
+                    if (selectedPiece instanceof Pawn && chessBoard.getIsPromoting() == false
                             && ((selectedPiece.getColor() && validMoves[7 - e.getY() / sideLength][e.getX() / sideLength] != 'f' && 7 - e.getY() / sideLength == 7)
-                            || (!selectedPiece.getColor() && validMoves[7 - e.getY() / sideLength][e.getX() / sideLength] != 'f' && 7 - e.getY() / sideLength == 0))) {
+                            || (!selectedPiece.getColor() && validMoves[e.getY() / sideLength][7 - e.getX() / sideLength] != 'f' && 7 - e.getY() / sideLength == 7))) {
                         chessBoard.setPromotionRow(e.getY() / sideLength);
                         chessBoard.setPromotionColumn(e.getX() / sideLength);
                         chessBoard.setIsPromoting(true);
                         chess.repaint();
                     } else if (chessBoard.getIsPromoting() == false) {
-                        chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
-                                Calculations.reverseCalcPosition(7 - e.getY() / sideLength, e.getX() / sideLength));
+                        if (game.getTurn()) {
+                            chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+                                    Calculations.reverseCalcPosition(7 - e.getY() / sideLength, e.getX() / sideLength));
+                        } else {
+                            chessBoard.moveGUI(Calculations.reverseCalcPosition(chessBoard.getCurrentRow(), 7 - chessBoard.getCurrentColumn()),
+                                    Calculations.reverseCalcPosition(e.getY() / sideLength, 7 - e.getX() / sideLength));
+                        }
                         chessBoard.setCurrentRow(-1);
                         chessBoard.setCurrentColumn(-1);
                         chess.repaint();
@@ -287,93 +315,122 @@ public class ChessGUI {
                         int r = 7 - e.getY() / sideLength;
                         int c = e.getX() / sideLength;
                         char prom = 'x';
-                        if (selectedPiece.getColor()) {
-                            if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 7) {
-                                prom = 'q';
+                        if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 7) {
+                            prom = 'q';
+                            if (game.getTurn()) {
                                 chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
                                         Calculations.reverseCalcPosition(7, e.getX() / sideLength), prom);
-                                chessBoard.setCurrentRow(-1);
-                                chessBoard.setCurrentColumn(-1);
-                                chessBoard.setIsPromoting(false);
-                                chess.repaint();
-                            } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 6) {
-                                prom = 'k';
-                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
-                                        Calculations.reverseCalcPosition(7, e.getX() / sideLength), prom);
-                                chessBoard.setCurrentRow(-1);
-                                chessBoard.setCurrentColumn(-1);
-                                chessBoard.setIsPromoting(false);
-                                chess.repaint();
-                            } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 5) {
-                                prom = 'r';
-                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
-                                        Calculations.reverseCalcPosition(7, e.getX() / sideLength), prom);
-                                chessBoard.setCurrentRow(-1);
-                                chessBoard.setCurrentColumn(-1);
-                                chessBoard.setIsPromoting(false);
-                                chess.repaint();
-                            } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 4) {
-                                prom = 'b';
-                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
-                                        Calculations.reverseCalcPosition(7, e.getX() / sideLength), prom);
-                                chessBoard.setCurrentRow(-1);
-                                chessBoard.setCurrentColumn(-1);
-                                chessBoard.setIsPromoting(false);
-                                chess.repaint();
                             } else {
-                                chess.repaint();
+                                chessBoard.moveGUI(Calculations.reverseCalcPosition(chessBoard.getCurrentRow(), 7 - chessBoard.getCurrentColumn()),
+                                        Calculations.reverseCalcPosition(7 - 7, 7 - e.getX() / sideLength), prom);
                             }
+
+                            chessBoard.setCurrentRow(-1);
+                            chessBoard.setCurrentColumn(-1);
+                            chessBoard.setIsPromoting(false);
+                            chess.repaint();
+                        } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 6) {
+                            prom = 'k';
+                            if (game.getTurn()) {
+                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+                                        Calculations.reverseCalcPosition(7, e.getX() / sideLength), prom);
+                            } else {
+                                chessBoard.moveGUI(Calculations.reverseCalcPosition(chessBoard.getCurrentRow(), 7 - chessBoard.getCurrentColumn()),
+                                        Calculations.reverseCalcPosition(7 - 7, 7 - e.getX() / sideLength), prom);
+                            }
+                            chessBoard.setCurrentRow(-1);
+                            chessBoard.setCurrentColumn(-1);
+                            chessBoard.setIsPromoting(false);
+                            chess.repaint();
+                        } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 5) {
+                            prom = 'r';
+                            if (game.getTurn()) {
+                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+                                        Calculations.reverseCalcPosition(7, e.getX() / sideLength), prom);
+                            } else {
+                                chessBoard.moveGUI(Calculations.reverseCalcPosition(chessBoard.getCurrentRow(), 7 - chessBoard.getCurrentColumn()),
+                                        Calculations.reverseCalcPosition(7 - 7, 7 - e.getX() / sideLength), prom);
+                            }
+                            chessBoard.setCurrentRow(-1);
+                            chessBoard.setCurrentColumn(-1);
+                            chessBoard.setIsPromoting(false);
+                            chess.repaint();
+                        } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 4) {
+                            prom = 'b';
+                            if (game.getTurn()) {
+                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+                                        Calculations.reverseCalcPosition(7, e.getX() / sideLength), prom);
+                            } else {
+                                chessBoard.moveGUI(Calculations.reverseCalcPosition(chessBoard.getCurrentRow(), 7 - chessBoard.getCurrentColumn()),
+                                        Calculations.reverseCalcPosition(7 - 7, 7 - e.getX() / sideLength), prom);
+                            }
+                            chessBoard.setCurrentRow(-1);
+                            chessBoard.setCurrentColumn(-1);
+                            chessBoard.setIsPromoting(false);
+                            chess.repaint();
                         } else {
-                            if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 0) {
-                                prom = 'q';
-                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
-                                        Calculations.reverseCalcPosition(0, e.getX() / sideLength), prom);
-                                chessBoard.setCurrentRow(-1);
-                                chessBoard.setCurrentColumn(-1);
-                                chessBoard.setIsPromoting(false);
-                                chess.repaint();
-                            } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 1) {
-                                prom = 'k';
-                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
-                                        Calculations.reverseCalcPosition(0, e.getX() / sideLength), prom);
-                                chessBoard.setCurrentRow(-1);
-                                chessBoard.setCurrentColumn(-1);
-                                chessBoard.setIsPromoting(false);
-                                chess.repaint();
-                            } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 2) {
-                                prom = 'r';
-                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
-                                        Calculations.reverseCalcPosition(0, e.getX() / sideLength), prom);
-                                chessBoard.setCurrentRow(-1);
-                                chessBoard.setCurrentColumn(-1);
-                                chessBoard.setIsPromoting(false);
-                                chess.repaint();
-                            } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 3) {
-                                prom = 'b';
-                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
-                                        Calculations.reverseCalcPosition(0, e.getX() / sideLength), prom);
-                                chessBoard.setCurrentRow(-1);
-                                chessBoard.setCurrentColumn(-1);
-                                chessBoard.setIsPromoting(false);
-                                chess.repaint();
-                            } else {
-                                chess.repaint();
-                            }
+                            chess.repaint();
                         }
 
+//                        else {
+//                            if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 0) {
+//                                prom = 'q';
+//                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+//                                        Calculations.reverseCalcPosition(0, e.getX() / sideLength), prom);
+//                                chessBoard.setCurrentRow(-1);
+//                                chessBoard.setCurrentColumn(-1);
+//                                chessBoard.setIsPromoting(false);
+//                                chess.repaint();
+//                            } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 1) {
+//                                prom = 'k';
+//                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+//                                        Calculations.reverseCalcPosition(0, e.getX() / sideLength), prom);
+//                                chessBoard.setCurrentRow(-1);
+//                                chessBoard.setCurrentColumn(-1);
+//                                chessBoard.setIsPromoting(false);
+//                                chess.repaint();
+//                            } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 2) {
+//                                prom = 'r';
+//                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+//                                        Calculations.reverseCalcPosition(0, e.getX() / sideLength), prom);
+//                                chessBoard.setCurrentRow(-1);
+//                                chessBoard.setCurrentColumn(-1);
+//                                chessBoard.setIsPromoting(false);
+//                                chess.repaint();
+//                            } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 3) {
+//                                prom = 'b';
+//                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+//                                        Calculations.reverseCalcPosition(0, e.getX() / sideLength), prom);
+//                                chessBoard.setCurrentRow(-1);
+//                                chessBoard.setCurrentColumn(-1);
+//                                chessBoard.setIsPromoting(false);
+//                                chess.repaint();
+//                            } else {
+//                                chess.repaint();
+//                            }
+//                        }
                     }
                 }
             }
-            @Override
-            public void mousePressed(MouseEvent e) {}
-            @Override
-            public void mouseReleased(MouseEvent e) {}
-            @Override
-            public void mouseEntered(MouseEvent e) {}
-            @Override
-            public void mouseExited(MouseEvent e) {}
-        };
 
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        };
+        Border border = BorderFactory.createLineBorder(Color.BLACK, 8);
+        chess.getRootPane().setBorder(border);
         chess.getContentPane().addMouseListener(mouse);
         chess.add(board);
         chess.setVisible(true);
