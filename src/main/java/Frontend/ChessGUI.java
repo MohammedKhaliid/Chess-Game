@@ -1,34 +1,24 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Frontend;
 
 import ChessCore.*;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import javafx.scene.input.KeyCode;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import testing.ChessGameBoard;
+import javax.swing.border.Border;
 
-/**
- *
- * @author eiada
- */
 public class ChessGUI {
 
     public static final int sideLength = 75;
@@ -95,18 +85,21 @@ public class ChessGUI {
         ChessGame game = chessBoard.getGame();
 
         JFrame chess = new JFrame();
-        chess.setSize(600, 600);
+        chess.setSize(616, 616);
         chess.setLocationRelativeTo(null);
         Color whiteColor = new Color(255, 228, 178);
-        Color blackColor = new Color(98,76,55);
+        Color blackColor = new Color(98, 76, 55);
         chess.setUndecorated(true);
+
         JPanel board;
+
         board = new JPanel(new GridLayout()) {
             @Override
             public void paint(Graphics graphic1d) {
                 Graphics2D graphic = (Graphics2D) graphic1d;
                 graphic.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 graphic.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+
                 for (int i = 0; i < 8; i++) {
                     for (int j = 0; j < 8; j++) {
                         if ((i + j) % 2 == 0) {
@@ -134,7 +127,7 @@ public class ChessGUI {
                                                 graphic.fillOval((k * 75) + 25, (m * 75) + 25, 25, 25);
                                             } else {
                                                 Point2D center = new Point2D.Float((k * 75) + 75 / 2, (m * 75) + 75 / 2);
-                                                float radius = 77;
+                                                float radius = 75;
                                                 Color[] colors = {new Color(0, 0, 0, 0), new Color(88, 117, 75)};
                                                 float[] dist = {0.5f, 1.0f};
                                                 RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
@@ -223,10 +216,10 @@ public class ChessGUI {
                     Image image;
                     if (game.getTurn()) {
                         for (int i = 0; i < 4; i++) {
-                            image = Toolkit.getDefaultToolkit().getImage("E:\\UNI\\Term 5\\Lab8\\src\\main\\java\\Images\\White" + pieces[i] + ".png");
+                            image = Toolkit.getDefaultToolkit().getImage("D:\\Programming\\Java\\Java University\\Lab8\\PiecesImages\\White" + pieces[i] + ".png");
                             Point2D center = new Point2D.Float((chessBoard.getPromotionColumn() * 75) + 75 / 2, ((chessBoard.getPromotionRow() + i) * 75) + 75 / 2);
                             float radius = 75 / 2 + 12;
-                            Color[] colors = {new Color(175,175,175), new Color(0, 0, 0, 0)};
+                            Color[] colors = {new Color(175, 175, 175), new Color(0, 0, 0, 0)};
                             float[] dist = {0.5f, 1.0f};
                             RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
                             graphic.setPaint(gradient);
@@ -235,10 +228,10 @@ public class ChessGUI {
                         }
                     } else {
                         for (int i = 0; i < 4; i++) {
-                            image = Toolkit.getDefaultToolkit().getImage("E:\\UNI\\Term 5\\Lab8\\src\\main\\java\\Images\\Black" + pieces[i] + ".png");
+                            image = Toolkit.getDefaultToolkit().getImage("D:\\Programming\\Java\\Java University\\Lab8\\PiecesImages\\Black" + pieces[i] + ".png");
                             Point2D center = new Point2D.Float((chessBoard.getPromotionColumn() * 75) + 75 / 2, ((chessBoard.getPromotionRow() - i) * 75) + 75 / 2);
                             float radius = 75 / 2 + 12;
-                            Color[] colors = {new Color(175,175,175), new Color(0, 0, 0, 0)};
+                            Color[] colors = {new Color(175, 175, 175), new Color(0, 0, 0, 0)};
                             float[] dist = {0.5f, 1.0f};
                             RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
                             graphic.setPaint(gradient);
@@ -366,16 +359,26 @@ public class ChessGUI {
                     }
                 }
             }
-            @Override
-            public void mousePressed(MouseEvent e) {}
-            @Override
-            public void mouseReleased(MouseEvent e) {}
-            @Override
-            public void mouseEntered(MouseEvent e) {}
-            @Override
-            public void mouseExited(MouseEvent e) {}
-        };
 
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        };
+        
+        Border border = BorderFactory.createLineBorder(Color.BLACK, 8);
+        chess.getRootPane().setBorder(border);
         chess.getContentPane().addMouseListener(mouse);
         chess.add(board);
         chess.setVisible(true);
