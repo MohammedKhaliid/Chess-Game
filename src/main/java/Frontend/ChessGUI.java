@@ -233,7 +233,6 @@ public class ChessGUI {
                 if (chessBoard.getIsPromoting() == true) {
                     String[] pieces = new String[]{"Queen", "Knight", "Rook", "Bishop"};
                     Image image;
-
                     for (int i = 0; i < 4; i++) {
                         if (game.getTurn()) {
                             image = Toolkit.getDefaultToolkit().getImage("E:\\UNI\\Term 5\\Lab8\\src\\main\\java\\Images\\White" + pieces[i] + ".png");
@@ -249,19 +248,6 @@ public class ChessGUI {
                         graphic.fill(new Ellipse2D.Double((chessBoard.getPromotionColumn() * 75), ((chessBoard.getPromotionRow() + i) * 75), 75, 75));
                         graphic.drawImage(image, (chessBoard.getPromotionColumn() * 75), ((chessBoard.getPromotionRow() + i) * 75), 75, 75, this);
                     }
-//                     else {
-//                        for (int i = 0; i < 4; i++) {
-//                            image = Toolkit.getDefaultToolkit().getImage("E:\\UNI\\Term 5\\Lab8\\src\\main\\java\\Images\\Black" + pieces[i] + ".png");
-//                            Point2D center = new Point2D.Float(((7 - chessBoard.getPromotionColumn()) * 75) + 75 / 2, ((7 - (chessBoard.getPromotionRow() - i)) * 75) + 75 / 2);
-//                            float radius = 75 / 2 + 12;
-//                            Color[] colors = {new Color(175, 175, 175), new Color(0, 0, 0, 0)};
-//                            float[] dist = {0.5f, 1.0f};
-//                            RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
-//                            graphic.setPaint(gradient);
-//                            graphic.fill(new Ellipse2D.Double(((7 - chessBoard.getPromotionColumn()) * 75), ((7 - (chessBoard.getPromotionRow() - i)) * 75), 75, 75));
-//                            graphic.drawImage(image, ((7 - chessBoard.getPromotionColumn()) * 75), ((7 - (chessBoard.getPromotionRow() - i)) * 75), 75, 75, this);
-//                        }
-//                    }
                 }
             }
         };
@@ -371,44 +357,6 @@ public class ChessGUI {
                         } else {
                             chess.repaint();
                         }
-
-//                        else {
-//                            if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 0) {
-//                                prom = 'q';
-//                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
-//                                        Calculations.reverseCalcPosition(0, e.getX() / sideLength), prom);
-//                                chessBoard.setCurrentRow(-1);
-//                                chessBoard.setCurrentColumn(-1);
-//                                chessBoard.setIsPromoting(false);
-//                                chess.repaint();
-//                            } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 1) {
-//                                prom = 'k';
-//                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
-//                                        Calculations.reverseCalcPosition(0, e.getX() / sideLength), prom);
-//                                chessBoard.setCurrentRow(-1);
-//                                chessBoard.setCurrentColumn(-1);
-//                                chessBoard.setIsPromoting(false);
-//                                chess.repaint();
-//                            } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 2) {
-//                                prom = 'r';
-//                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
-//                                        Calculations.reverseCalcPosition(0, e.getX() / sideLength), prom);
-//                                chessBoard.setCurrentRow(-1);
-//                                chessBoard.setCurrentColumn(-1);
-//                                chessBoard.setIsPromoting(false);
-//                                chess.repaint();
-//                            } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 3) {
-//                                prom = 'b';
-//                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
-//                                        Calculations.reverseCalcPosition(0, e.getX() / sideLength), prom);
-//                                chessBoard.setCurrentRow(-1);
-//                                chessBoard.setCurrentColumn(-1);
-//                                chessBoard.setIsPromoting(false);
-//                                chess.repaint();
-//                            } else {
-//                                chess.repaint();
-//                            }
-//                        }
                     }
                 }
             }
