@@ -17,8 +17,10 @@ import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import javafx.scene.input.KeyCode;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import testing.ChessGameBoard;
@@ -33,19 +35,15 @@ public class ChessGUI {
     private ChessGame game;
     private int currentRow;
     private int currentColumn;
-    private char PromotedPiece;
+    private int promotionRow;
+    private int promotionColumn;
     private boolean isPromoting;
 
     public ChessGUI() {
         this.game = new ChessGame();
         currentRow = -1;
         currentColumn = -1;
-        PromotedPiece = 'x';
         isPromoting = false;
-    }
-
-    public char getPromotedPiece() {
-        return PromotedPiece;
     }
 
     public boolean getIsPromoting() {
@@ -60,12 +58,16 @@ public class ChessGUI {
         return currentColumn;
     }
 
-    public ChessGame getGame() {
-        return this.game;
+    public int getPromotionRow() {
+        return promotionRow;
     }
 
-    public void setPromotedPiece(char promotedPiece) {
-        this.PromotedPiece = promotedPiece;
+    public int getPromotionColumn() {
+        return promotionColumn;
+    }
+
+    public ChessGame getGame() {
+        return this.game;
     }
 
     public void setIsPromoting(boolean isPromoting) {
@@ -80,6 +82,14 @@ public class ChessGUI {
         this.currentRow = currentRow;
     }
 
+    public void setPromotionColumn(int promotionColumn) {
+        this.promotionColumn = promotionColumn;
+    }
+
+    public void setPromotionRow(int promotionRow) {
+        this.promotionRow = promotionRow;
+    }
+
     public static void main(String[] args) {
         ChessGUI chessBoard = new ChessGUI();
         ChessGame game = chessBoard.getGame();
@@ -90,7 +100,6 @@ public class ChessGUI {
         Color whiteColor = new Color(255, 228, 178);
         Color blackColor = new Color(98,76,55);
         chess.setUndecorated(true);
-//        chess.getContentPane().setBackground(Color.red);
         JPanel board;
         board = new JPanel(new GridLayout()) {
             @Override
@@ -108,13 +117,12 @@ public class ChessGUI {
                         graphic.fillRect((i * 75), (j * 75), sideLength, sideLength);
 
                         if (chessBoard.getCurrentRow() != -1 && chessBoard.getCurrentColumn() != -1) {
-
-                            Piece selectedPiece = game.getPiece(7 - chessBoard.getCurrentColumn(), chessBoard.getCurrentRow());
+                            Piece selectedPiece = game.getPiece(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn());
 
                             if (selectedPiece != null && selectedPiece.getColor() == game.getTurn()) {
 
                                 graphic.setColor(new Color(88, 117, 75));
-                                graphic.fillRect((chessBoard.getCurrentRow() * 75), (chessBoard.getCurrentColumn() * 75), sideLength, sideLength);
+                                graphic.fillRect((chessBoard.getCurrentColumn() * 75), (chessBoard.getCurrentRow() * 75), sideLength, sideLength);
 
                                 char[][] validMoves = game.allValidMoves(selectedPiece, false);
 
@@ -183,7 +191,7 @@ public class ChessGUI {
                                     pieceImage = "WhiteKing";
                                     if (!game.isKingSafe('b')) {
                                         Point2D center = new Point2D.Float((i * 75) + 75 / 2, (j * 75) + 75 / 2);
-                                        float radius = 75/2 +10;
+                                        float radius = 75 / 2 + 10;
                                         Color[] colors = {new Color(255, 0, 0), new Color(0, 0, 0, 0)};
                                         float[] dist = {0.5f, 1.0f};
                                         RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
@@ -194,7 +202,7 @@ public class ChessGUI {
                                     pieceImage = "BlackKing";
                                     if (!game.isKingSafe('w')) {
                                         Point2D center = new Point2D.Float((i * 75) + 75 / 2, (j * 75) + 75 / 2);
-                                        float radius = 75/2 +10;
+                                        float radius = 75 / 2 + 10;
                                         Color[] colors = {new Color(255, 0, 0), new Color(0, 0, 0, 0)};
                                         float[] dist = {0.5f, 1.0f};
                                         RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
@@ -210,71 +218,167 @@ public class ChessGUI {
                         }
                     }
                 }
-                if(chessBoard.getIsPromoting() == true)
-                {
-                    
+                if (chessBoard.getIsPromoting() == true) {
+                    String[] pieces = new String[]{"Queen", "Knight", "Rook", "Bishop"};
+                    Image image;
+                    if (game.getTurn()) {
+                        for (int i = 0; i < 4; i++) {
+                            image = Toolkit.getDefaultToolkit().getImage("E:\\UNI\\Term 5\\Lab8\\src\\main\\java\\Images\\White" + pieces[i] + ".png");
+                            Point2D center = new Point2D.Float((chessBoard.getPromotionColumn() * 75) + 75 / 2, ((chessBoard.getPromotionRow() + i) * 75) + 75 / 2);
+                            float radius = 75 / 2 + 12;
+                            Color[] colors = {new Color(175,175,175), new Color(0, 0, 0, 0)};
+                            float[] dist = {0.5f, 1.0f};
+                            RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
+                            graphic.setPaint(gradient);
+                            graphic.fill(new Ellipse2D.Double((chessBoard.getPromotionColumn() * 75), ((chessBoard.getPromotionRow() + i) * 75), 75, 75));
+                            graphic.drawImage(image, (chessBoard.getPromotionColumn() * 75), ((chessBoard.getPromotionRow() + i) * 75), 75, 75, this);
+                        }
+                    } else {
+                        for (int i = 0; i < 4; i++) {
+                            image = Toolkit.getDefaultToolkit().getImage("E:\\UNI\\Term 5\\Lab8\\src\\main\\java\\Images\\Black" + pieces[i] + ".png");
+                            Point2D center = new Point2D.Float((chessBoard.getPromotionColumn() * 75) + 75 / 2, ((chessBoard.getPromotionRow() - i) * 75) + 75 / 2);
+                            float radius = 75 / 2 + 12;
+                            Color[] colors = {new Color(175,175,175), new Color(0, 0, 0, 0)};
+                            float[] dist = {0.5f, 1.0f};
+                            RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
+                            graphic.setPaint(gradient);
+                            graphic.fill(new Ellipse2D.Double((chessBoard.getPromotionColumn() * 75), ((chessBoard.getPromotionRow() - i) * 75), 75, 75));
+                            graphic.drawImage(image, (chessBoard.getPromotionColumn() * 75), ((chessBoard.getPromotionRow() - i) * 75), 75, 75, this);
+                        }
+                    }
+
                 }
-                
+
             }
         };
         MouseListener mouse = new MouseListener() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (chessBoard.getCurrentRow() == -1 || chessBoard.getCurrentColumn() == -1) {
-                    System.out.println(" from ");
 
-                    chessBoard.setCurrentRow(e.getX() / sideLength);
-                    chessBoard.setCurrentColumn(e.getY() / sideLength);
+                Piece selectedPiece;
+                char[][] validMoves = ChessGame.generateBoard();
+                if (chessBoard.getCurrentRow() == -1 || chessBoard.getCurrentColumn() == -1) {
+                    chessBoard.setCurrentRow(e.getY() / sideLength);
+                    chessBoard.setCurrentColumn(e.getX() / sideLength);
+                    selectedPiece = game.getPiece(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn());
+                    if (selectedPiece != null) {
+                        validMoves = game.allValidMoves(selectedPiece, false);
+                    }
                     chess.repaint();
                 } else {
-                    System.out.println(" to ");
-                    Piece selectedPiece = game.getPiece(7 - chessBoard.getCurrentColumn(), chessBoard.getCurrentRow());
-                    if (selectedPiece instanceof Pawn
-                            && (selectedPiece.getColor() && (7 - e.getY() / sideLength == 7) || (!selectedPiece.getColor() && 7 - e.getY() / sideLength == 0))) {
+
+                    selectedPiece = game.getPiece(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn());
+                    if (selectedPiece != null) {
+                        validMoves = game.allValidMoves(selectedPiece, false);
+                    }
+                    if ((selectedPiece = game.getPiece(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn())) instanceof Pawn && chessBoard.getIsPromoting() == false
+                            && ((selectedPiece.getColor() && validMoves[7 - e.getY() / sideLength][e.getX() / sideLength] != 'f' && 7 - e.getY() / sideLength == 7)
+                            || (!selectedPiece.getColor() && validMoves[7 - e.getY() / sideLength][e.getX() / sideLength] != 'f' && 7 - e.getY() / sideLength == 0))) {
+                        chessBoard.setPromotionRow(e.getY() / sideLength);
+                        chessBoard.setPromotionColumn(e.getX() / sideLength);
                         chessBoard.setIsPromoting(true);
                         chess.repaint();
-                        //save to position
-                        
-                        ///////////////////////////
-                    } else {
-                        chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentColumn(), chessBoard.getCurrentRow()),
+                    } else if (chessBoard.getIsPromoting() == false) {
+                        chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
                                 Calculations.reverseCalcPosition(7 - e.getY() / sideLength, e.getX() / sideLength));
+                        chessBoard.setCurrentRow(-1);
+                        chessBoard.setCurrentColumn(-1);
+                        chess.repaint();
+                    } else {
+                        int r = 7 - e.getY() / sideLength;
+                        int c = e.getX() / sideLength;
+                        char prom = 'x';
+                        if (selectedPiece.getColor()) {
+                            if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 7) {
+                                prom = 'q';
+                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+                                        Calculations.reverseCalcPosition(7, e.getX() / sideLength), prom);
+                                chessBoard.setCurrentRow(-1);
+                                chessBoard.setCurrentColumn(-1);
+                                chessBoard.setIsPromoting(false);
+                                chess.repaint();
+                            } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 6) {
+                                prom = 'k';
+                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+                                        Calculations.reverseCalcPosition(7, e.getX() / sideLength), prom);
+                                chessBoard.setCurrentRow(-1);
+                                chessBoard.setCurrentColumn(-1);
+                                chessBoard.setIsPromoting(false);
+                                chess.repaint();
+                            } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 5) {
+                                prom = 'r';
+                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+                                        Calculations.reverseCalcPosition(7, e.getX() / sideLength), prom);
+                                chessBoard.setCurrentRow(-1);
+                                chessBoard.setCurrentColumn(-1);
+                                chessBoard.setIsPromoting(false);
+                                chess.repaint();
+                            } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 4) {
+                                prom = 'b';
+                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+                                        Calculations.reverseCalcPosition(7, e.getX() / sideLength), prom);
+                                chessBoard.setCurrentRow(-1);
+                                chessBoard.setCurrentColumn(-1);
+                                chessBoard.setIsPromoting(false);
+                                chess.repaint();
+                            } else {
+                                chess.repaint();
+                            }
+                        } else {
+                            if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 0) {
+                                prom = 'q';
+                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+                                        Calculations.reverseCalcPosition(0, e.getX() / sideLength), prom);
+                                chessBoard.setCurrentRow(-1);
+                                chessBoard.setCurrentColumn(-1);
+                                chessBoard.setIsPromoting(false);
+                                chess.repaint();
+                            } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 1) {
+                                prom = 'k';
+                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+                                        Calculations.reverseCalcPosition(0, e.getX() / sideLength), prom);
+                                chessBoard.setCurrentRow(-1);
+                                chessBoard.setCurrentColumn(-1);
+                                chessBoard.setIsPromoting(false);
+                                chess.repaint();
+                            } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 2) {
+                                prom = 'r';
+                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+                                        Calculations.reverseCalcPosition(0, e.getX() / sideLength), prom);
+                                chessBoard.setCurrentRow(-1);
+                                chessBoard.setCurrentColumn(-1);
+                                chessBoard.setIsPromoting(false);
+                                chess.repaint();
+                            } else if ((c == chessBoard.getCurrentColumn() || c == chessBoard.getCurrentColumn() + 1 || c == chessBoard.getCurrentColumn() - 1) && r == 3) {
+                                prom = 'b';
+                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+                                        Calculations.reverseCalcPosition(0, e.getX() / sideLength), prom);
+                                chessBoard.setCurrentRow(-1);
+                                chessBoard.setCurrentColumn(-1);
+                                chessBoard.setIsPromoting(false);
+                                chess.repaint();
+                            } else {
+                                chess.repaint();
+                            }
+                        }
+
                     }
-
-                    chessBoard.setCurrentRow(-1);
-                    chessBoard.setCurrentColumn(-1);
-
-                    chess.repaint();
                 }
             }
-
             @Override
-            public void mousePressed(MouseEvent e) {
-//                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-
+            public void mousePressed(MouseEvent e) {}
             @Override
-            public void mouseReleased(MouseEvent e) {
-//                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-
+            public void mouseReleased(MouseEvent e) {}
             @Override
-            public void mouseEntered(MouseEvent e) {
-//                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-
+            public void mouseEntered(MouseEvent e) {}
             @Override
-            public void mouseExited(MouseEvent e) {
-//                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
+            public void mouseExited(MouseEvent e) {}
         };
 
         chess.getContentPane().addMouseListener(mouse);
         chess.add(board);
-
-        chess.setVisible(
-                true);
+        chess.setVisible(true);
     }
 
     public void moveGUI(String from, String to, char promoteTo) {

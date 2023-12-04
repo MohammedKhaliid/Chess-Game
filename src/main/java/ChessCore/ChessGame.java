@@ -54,7 +54,7 @@ public class ChessGame {
         return whiteTurn;
     }
 
-    private static char[][] generateBoard() {
+    public static char[][] generateBoard() {
         char[][] x = new char[8][8];
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
