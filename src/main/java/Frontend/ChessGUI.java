@@ -88,7 +88,7 @@ public class ChessGUI {
         chess.setSize(616, 616);
         chess.setLocationRelativeTo(null);
         Color whiteColor = new Color(255, 228, 178);
-        Color blackColor = new Color(98, 76, 55);
+        Color blackColor = new Color(12,52,61);
         chess.setUndecorated(true);
 
         JPanel board;
