@@ -48,6 +48,11 @@ public class ChessGame {
     public static boolean inBoard(int row, int column) {
         return (row >= 0 && row < 8 && column >= 0 && column < 8);
     }
+    
+    public boolean getTurn()
+    {
+        return whiteTurn;
+    }
 
     private static char[][] generateBoard() {
         char[][] x = new char[8][8];
@@ -59,7 +64,7 @@ public class ChessGame {
         return x;
     }
 
-    private boolean isKingSafe(char pieceType) {
+    public boolean isKingSafe(char pieceType) {
         //is king safe from piecetype
         //type black then check if white king safe       
         //type white then check if black king safe

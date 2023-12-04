@@ -6,17 +6,17 @@ package Frontend;
 
 import ChessCore.*;
 import java.awt.Color;
-import java.awt.GradientPaint;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.RadialGradientPaint;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import javax.swing.JFrame;
@@ -33,11 +33,23 @@ public class ChessGUI {
     private ChessGame game;
     private int currentRow;
     private int currentColumn;
+    private char PromotedPiece;
+    private boolean isPromoting;
 
     public ChessGUI() {
         this.game = new ChessGame();
         currentRow = -1;
         currentColumn = -1;
+        PromotedPiece = 'x';
+        isPromoting = false;
+    }
+
+    public char getPromotedPiece() {
+        return PromotedPiece;
+    }
+
+    public boolean getIsPromoting() {
+        return isPromoting;
     }
 
     public int getCurrentRow() {
@@ -50,6 +62,14 @@ public class ChessGUI {
 
     public ChessGame getGame() {
         return this.game;
+    }
+
+    public void setPromotedPiece(char promotedPiece) {
+        this.PromotedPiece = promotedPiece;
+    }
+
+    public void setIsPromoting(boolean isPromoting) {
+        this.isPromoting = isPromoting;
     }
 
     public void setCurrentColumn(int currentColumn) {
@@ -66,17 +86,18 @@ public class ChessGUI {
 
         JFrame chess = new JFrame();
         chess.setSize(600, 600);
-        chess.setUndecorated(true);
         chess.setLocationRelativeTo(null);
         Color whiteColor = new Color(255, 228, 178);
-        Color blackColor = new Color(151, 119, 84);
-        chess.setUndecorated(false);
+        Color blackColor = new Color(98,76,55);
+        chess.setUndecorated(true);
 //        chess.getContentPane().setBackground(Color.red);
         JPanel board;
         board = new JPanel(new GridLayout()) {
             @Override
             public void paint(Graphics graphic1d) {
                 Graphics2D graphic = (Graphics2D) graphic1d;
+                graphic.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                graphic.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
                 for (int i = 0; i < 8; i++) {
                     for (int j = 0; j < 8; j++) {
                         if ((i + j) % 2 == 0) {
@@ -85,24 +106,37 @@ public class ChessGUI {
                             graphic.setColor(blackColor);
                         }
                         graphic.fillRect((i * 75), (j * 75), sideLength, sideLength);
+
                         if (chessBoard.getCurrentRow() != -1 && chessBoard.getCurrentColumn() != -1) {
-//                            graphic.setColor(new Color(147,196,125));
-//                            graphic.fillRect((chessBoard.getCurrentRow() * 75), (chessBoard.getCurrentColumn() * 75), sideLength, sideLength);
-//                            GradientPaint gradient = new GradientPaint(0, 0, Color.RED, 75, 75, Color.WHITE);
 
-                            Point2D center = new Point2D.Float( 75/ 2, 75/ 2);
-                            float radius = 75;
-                            Color[] colors = {new Color(0,0,0,0), new Color(88,117,75)};
-                            float[] dist = {0.5f, 1.0f};
-                            RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
-                            Shape rect = new Rectangle2D.Double(0, 0, 75, 75);
+                            Piece selectedPiece = game.getPiece(7 - chessBoard.getCurrentColumn(), chessBoard.getCurrentRow());
 
-                            // Fill the oval with the radial gradient
-                            // Set the paint to the graphics context
-                            graphic.setPaint(gradient);
+                            if (selectedPiece != null && selectedPiece.getColor() == game.getTurn()) {
 
-                            // Fill a rectangle with the gradient
-                            graphic.fill(new Rectangle2D.Double(0, 0, 75, 75));
+                                graphic.setColor(new Color(88, 117, 75));
+                                graphic.fillRect((chessBoard.getCurrentRow() * 75), (chessBoard.getCurrentColumn() * 75), sideLength, sideLength);
+
+                                char[][] validMoves = game.allValidMoves(selectedPiece, false);
+
+                                for (int k = 0; k < 8; k++) {
+                                    for (int m = 0; m < 8; m++) {
+                                        if (validMoves[7 - m][k] != 'f') {
+                                            if (game.getPiece(7 - m, k) == null) {
+                                                graphic.setColor(new Color(104, 130, 93));
+                                                graphic.fillOval((k * 75) + 25, (m * 75) + 25, 25, 25);
+                                            } else {
+                                                Point2D center = new Point2D.Float((k * 75) + 75 / 2, (m * 75) + 75 / 2);
+                                                float radius = 77;
+                                                Color[] colors = {new Color(0, 0, 0, 0), new Color(88, 117, 75)};
+                                                float[] dist = {0.5f, 1.0f};
+                                                RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
+                                                graphic.setPaint(gradient);
+                                                graphic.fill(new Rectangle2D.Double((k * 75), (m * 75), 75, 75));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
 
                     }
@@ -147,17 +181,40 @@ public class ChessGUI {
                             } else if (p instanceof King) {
                                 if (p.getColor()) {
                                     pieceImage = "WhiteKing";
+                                    if (!game.isKingSafe('b')) {
+                                        Point2D center = new Point2D.Float((i * 75) + 75 / 2, (j * 75) + 75 / 2);
+                                        float radius = 75/2 +10;
+                                        Color[] colors = {new Color(255, 0, 0), new Color(0, 0, 0, 0)};
+                                        float[] dist = {0.5f, 1.0f};
+                                        RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
+                                        graphic.setPaint(gradient);
+                                        graphic.fill(new Rectangle2D.Double((i * 75), (j * 75), 75, 75));
+                                    }
                                 } else {
                                     pieceImage = "BlackKing";
+                                    if (!game.isKingSafe('w')) {
+                                        Point2D center = new Point2D.Float((i * 75) + 75 / 2, (j * 75) + 75 / 2);
+                                        float radius = 75/2 +10;
+                                        Color[] colors = {new Color(255, 0, 0), new Color(0, 0, 0, 0)};
+                                        float[] dist = {0.5f, 1.0f};
+                                        RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
+                                        graphic.setPaint(gradient);
+                                        graphic.fill(new Rectangle2D.Double((i * 75), (j * 75), 75, 75));
+                                    }
                                 }
-                            }
 
-                            image = Toolkit.getDefaultToolkit().getImage("D:\\Programming\\Java\\Java University\\Lab8\\src\\main\\java\\Images\\" + pieceImage + ".png");
+                            }
+                            image = Toolkit.getDefaultToolkit().getImage("D:\\Programming\\Java\\Java University\\Lab8\\PiecesImages\\" + pieceImage + ".png");
                             graphic.drawImage(image, (i * 75), (j * 75), 75, 75, this);
 
                         }
                     }
                 }
+                if(chessBoard.getIsPromoting() == true)
+                {
+                    
+                }
+                
             }
         };
         MouseListener mouse = new MouseListener() {
@@ -169,12 +226,21 @@ public class ChessGUI {
 
                     chessBoard.setCurrentRow(e.getX() / sideLength);
                     chessBoard.setCurrentColumn(e.getY() / sideLength);
-
-                    //all possible moves/////////////////////////////////////////
                     chess.repaint();
                 } else {
                     System.out.println(" to ");
-                    chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentColumn(), chessBoard.getCurrentRow()), Calculations.reverseCalcPosition(7 - e.getY() / sideLength, e.getX() / sideLength));
+                    Piece selectedPiece = game.getPiece(7 - chessBoard.getCurrentColumn(), chessBoard.getCurrentRow());
+                    if (selectedPiece instanceof Pawn
+                            && (selectedPiece.getColor() && (7 - e.getY() / sideLength == 7) || (!selectedPiece.getColor() && 7 - e.getY() / sideLength == 0))) {
+                        chessBoard.setIsPromoting(true);
+                        chess.repaint();
+                        //save to position
+                        
+                        ///////////////////////////
+                    } else {
+                        chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentColumn(), chessBoard.getCurrentRow()),
+                                Calculations.reverseCalcPosition(7 - e.getY() / sideLength, e.getX() / sideLength));
+                    }
 
                     chessBoard.setCurrentRow(-1);
                     chessBoard.setCurrentColumn(-1);
@@ -204,8 +270,7 @@ public class ChessGUI {
             }
         };
 
-        chess.getContentPane()
-                .addMouseListener(mouse);
+        chess.getContentPane().addMouseListener(mouse);
         chess.add(board);
 
         chess.setVisible(
