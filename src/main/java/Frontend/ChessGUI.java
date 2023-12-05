@@ -129,7 +129,7 @@ public class ChessGUI {
                                                 Point2D center = new Point2D.Float((k * 75) + 75 / 2, (m * 75) + 75 / 2);
                                                 float radius = 75;
                                                 Color[] colors = {new Color(0, 0, 0, 0), new Color(88, 117, 75)};
-                                                float[] dist = {0.5f, 1.0f};
+                                                float[] dist = {0.5f, 0.6f};
                                                 RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
                                                 graphic.setPaint(gradient);
                                                 graphic.fill(new Rectangle2D.Double((k * 75), (m * 75), 75, 75));

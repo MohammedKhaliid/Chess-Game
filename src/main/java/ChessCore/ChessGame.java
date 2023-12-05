@@ -406,7 +406,7 @@ public class ChessGame {
         for (int j = 0; j < 2; j++) {
             for (int i = 0; i < 8; i++) {
                 if (black[j][i].getIsCaptured() == false) {
-                    if (j == 1) {
+                    if (black[j][i] instanceof Pawn) {
                         bl[0]++;
                     } else if (black[j][i] instanceof Rook) {
                         bl[1]++;
@@ -419,7 +419,7 @@ public class ChessGame {
                     }
                 }
                 if (white[j][i].getIsCaptured() == false) {
-                    if (j == 1) {
+                    if (white[j][i] instanceof Pawn) {
                         wh[0]++;
                     } else if (white[j][i] instanceof Rook) {
                         wh[1]++;
