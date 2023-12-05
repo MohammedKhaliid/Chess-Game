@@ -27,18 +27,22 @@ public class ChessGUI {
     public static final Color GREEN_COLOR = new Color(88, 117, 75);
     public static final Color TRANSPARENT_COLOR = new Color(0, 0, 0, 0);
     public static final Color DARKGREEN_COLOR = new Color(104, 130, 93);
-    
-    private ChessGame game;
-    private int currentRow;
-    private int currentColumn;
-    private int promotionRow;
-    private int promotionColumn;
+    public static final Color RED_COLOR = new Color(255, 0, 0);
+    public static final Color GREY_COLOR = new Color(175, 175, 175);
+
+    private final ChessGame game;
+    private int currentRow, currentColumn;
+    private int promotionRow, promotionColumn;
     private boolean isPromoting;
+    private final JFrame chess;
+    private JPanel board;
+    private Graphics2D graphic;
+    private MouseListener mouse;
 
     public ChessGUI() {
-        this.game = new ChessGame();
-        currentRow = -1;
-        currentColumn = -1;
+        game = new ChessGame();
+        chess = new JFrame();
+        currentRow = currentColumn = -1;
         isPromoting = false;
     }
 
@@ -86,95 +90,69 @@ public class ChessGUI {
         this.promotionRow = promotionRow;
     }
 
-    public static void frameSetup(JFrame chess) {
-        chess.setSize(616, 616);
+    //methods
+    private void frameSetup() {
+        chess.setSize(600 + 8 * 2, 600 + 8 * 2);
         chess.setLocationRelativeTo(null);
         chess.setUndecorated(true);
         Border border = BorderFactory.createLineBorder(Color.BLACK, 8);
         chess.getRootPane().setBorder(border);
     }
-    
-    public static void boardSetup(ChessGUI chessBoard, ChessGame game, Graphics2D graphic){
-        
-        for (int i = 0; i < 8; i++) 
-                {
-                    for (int j = 0; j < 8; j++) 
-                    {
-                        if ((i + j) % 2 == 0) 
-                        {
-                            graphic.setColor(WHITE_COLOR);
-                        } 
-                        else 
-                        {
-                            graphic.setColor(BLACK_COLOR);
-                        }
-                        graphic.fillRect((i * 75), (j * 75), SIDE_LENGTH, SIDE_LENGTH);
 
-                        if (chessBoard.getCurrentRow() != -1 && chessBoard.getCurrentColumn() != -1) 
-                        {
+    private void boardSetup() {
 
-                            Piece selectedPiece;
-                            if (game.getTurn()) 
-                            {
-                                selectedPiece = game.getPiece(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn());
-                            } 
-                            else 
-                            {
-                                selectedPiece = game.getPiece(chessBoard.getCurrentRow(), 7 - chessBoard.getCurrentColumn());
-                            }
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if ((i + j) % 2 == 0) {
+                    graphic.setColor(WHITE_COLOR);
+                } else {
+                    graphic.setColor(BLACK_COLOR);
+                }
+                graphic.fillRect((i * SIDE_LENGTH), (j * SIDE_LENGTH), SIDE_LENGTH, SIDE_LENGTH);
 
-                            if (selectedPiece != null && selectedPiece.getColor() == game.getTurn() && !game.getGameOver()) 
-                            {
+                if (getCurrentRow() != -1 && getCurrentColumn() != -1) {
 
-                                graphic.setColor(GREEN_COLOR);
-                                graphic.fillRect((chessBoard.getCurrentColumn() * 75), (chessBoard.getCurrentRow() * 75), SIDE_LENGTH, SIDE_LENGTH);
+                    Piece selectedPiece;
+                    if (game.getTurn()) {
+                        selectedPiece = game.getPiece(7 - getCurrentRow(), getCurrentColumn());
+                    } else {
+                        selectedPiece = game.getPiece(getCurrentRow(), 7 - getCurrentColumn());
+                    }
 
-                                char[][] validMoves = game.allValidMoves(selectedPiece, false);
+                    if (selectedPiece != null && selectedPiece.getColor() == game.getTurn() && !game.getGameOver()) {
 
-                                for (int k = 0; k < 8; k++) 
-                                {
-                                    for (int m = 0; m < 8; m++) 
-                                    {
-                                        if (validMoves[7 - m][k] != 'f') 
-                                        {
-                                            if (game.getPiece(7 - m, k) == null) 
-                                            {
-                                                graphic.setColor(DARKGREEN_COLOR);
-                                                
-                                                if (game.getTurn()) 
-                                                {
-                                                    graphic.fillOval((k * 75) + 25, (m * 75) + 25, 25, 25);
-                                                } 
-                                                else 
-                                                {
-                                                    graphic.fillOval(((7 - k) * 75) + 25, ((7 - m) * 75) + 25, 25, 25);
-                                                }
-                                            } 
-                                            else 
-                                            {
-                                                Point2D center;
-                                                if (game.getTurn()) 
-                                                {
-                                                    center = new Point2D.Float((k * 75) + 75 / 2, (m * 75) + 75 / 2);
-                                                }
-                                                else 
-                                                {
-                                                    center = new Point2D.Float(((7 - k) * 75) + 75 / 2, ((7 - m) * 75) + 75 / 2);
-                                                }
-                                                float radius = 75;
-                                                Color[] colors = {TRANSPARENT_COLOR, GREEN_COLOR};
-                                                float[] dist = {0.5f, 1.0f};
-                                                RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
-                                                graphic.setPaint(gradient);
-                                                if (game.getTurn()) 
-                                                {
-                                                    graphic.fill(new Rectangle2D.Double((k * 75), (m * 75), 75, 75));
-                                                } 
-                                                else 
-                                                {
-                                                    graphic.fill(new Rectangle2D.Double(((7 - k) * 75), ((7 - m) * 75), 75, 75));
-                                                }
-                                            }
+                        graphic.setColor(GREEN_COLOR);
+                        graphic.fillRect((getCurrentColumn() * SIDE_LENGTH), (getCurrentRow() * SIDE_LENGTH), SIDE_LENGTH, SIDE_LENGTH);
+
+                        char[][] validMoves = game.allValidMoves(selectedPiece, false);
+
+                        for (int k = 0; k < 8; k++) {
+                            for (int m = 0; m < 8; m++) {
+                                if (validMoves[7 - m][k] != 'f') {
+                                    if (game.getPiece(7 - m, k) == null) {
+                                        graphic.setColor(DARKGREEN_COLOR);
+
+                                        if (game.getTurn()) {
+                                            graphic.fillOval((k * SIDE_LENGTH) + 25, (m * SIDE_LENGTH) + 25, 25, 25);
+                                        } else {
+                                            graphic.fillOval(((7 - k) * SIDE_LENGTH) + 25, ((7 - m) * SIDE_LENGTH) + 25, 25, 25);
+                                        }
+                                    } else {
+                                        Point2D center;
+                                        if (game.getTurn()) {
+                                            center = new Point2D.Float((k * SIDE_LENGTH) + SIDE_LENGTH / 2, (m * SIDE_LENGTH) + SIDE_LENGTH / 2);
+                                        } else {
+                                            center = new Point2D.Float(((7 - k) * SIDE_LENGTH) + SIDE_LENGTH / 2, ((7 - m) * SIDE_LENGTH) + SIDE_LENGTH / 2);
+                                        }
+                                        float radius = SIDE_LENGTH;
+                                        Color[] colors = {TRANSPARENT_COLOR, GREEN_COLOR};
+                                        float[] dist = {0.5f, 0.6f};
+                                        RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
+                                        graphic.setPaint(gradient);
+                                        if (game.getTurn()) {
+                                            graphic.fill(new Rectangle2D.Double((k * SIDE_LENGTH), (m * SIDE_LENGTH), SIDE_LENGTH, SIDE_LENGTH));
+                                        } else {
+                                            graphic.fill(new Rectangle2D.Double(((7 - k) * SIDE_LENGTH), ((7 - m) * SIDE_LENGTH), SIDE_LENGTH, SIDE_LENGTH));
                                         }
                                     }
                                 }
@@ -182,179 +160,101 @@ public class ChessGUI {
                         }
                     }
                 }
+            }
+        }
     }
 
-    public static void gameRun(ChessGUI chessBoard, ChessGame game, Graphics2D graphic, JPanel board){
-        for (int i = 0; i < 8; i++) 
-                {
-                    for (int j = 0; j < 8; j++) 
-                    {
-                        Piece p;
-                        if (game.getTurn()) 
-                        {
-                            p = game.getPiece(7 - j, i);
-                        } 
-                        else 
-                        {
-                            p = game.getPiece(j, 7 - i);
-                        }
-                        if (p != null) 
-                        {
-                            Image image;
-                            String pieceImage = "";
-                            if (p instanceof Pawn)
-                            {
-                                if (p.getColor()) 
-                                {
-                                    pieceImage = "WhitePawn";
-                                } 
-                                else 
-                                {
-                                    pieceImage = "BlackPawn";
-                                }
-                            }
-                            else if (p instanceof Rook) 
-                            {
-                                if (p.getColor()) 
-                                {
-                                    pieceImage = "WhiteRook";
-                                } 
-                                else 
-                                {
-                                    pieceImage = "BlackRook";
-                                }
-                            } 
-                            else if (p instanceof Knight) {
-                                if (p.getColor()) 
-                                {
-                                    pieceImage = "WhiteKnight";
-                                } 
-                                else
-                                {
-                                    pieceImage = "BlackKnight";
-                                }
-                            } 
-                            else if (p instanceof Bishop) 
-                            {
-                                if (p.getColor())
-                                {
-                                    pieceImage = "WhiteBishop";
-                                } 
-                                else
-                                {
-                                    pieceImage = "BlackBishop";
-                                }
-                            } 
-                            else if (p instanceof Queen) 
-                            {
-                                if (p.getColor()) 
-                                {
-                                    pieceImage = "WhiteQueen";
-                                } 
-                                else 
-                                {
-                                    pieceImage = "BlackQueen";
-                                }
-                            } 
-                            else if (p instanceof King) 
-                            {
-                                if (p.getColor()) 
-                                {
-                                    pieceImage = "WhiteKing";
-                                    if (!game.isKingSafe('b')) 
-                                    {
-                                        Point2D center = new Point2D.Float((i * 75) + 75 / 2, (j * 75) + 75 / 2);
-                                        float radius = 75 / 2 + 10;
-                                        Color[] colors = {new Color(255, 0, 0), new Color(0, 0, 0, 0)};
-                                        float[] dist = {0.5f, 1.0f};
-                                        RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
-                                        graphic.setPaint(gradient);
-                                        graphic.fill(new Rectangle2D.Double((i * 75), (j * 75), 75, 75));
-                                    }
-                                } 
-                                else 
-                                {
-                                    pieceImage = "BlackKing";
-                                    if (!game.isKingSafe('w')) 
-                                    {
-                                        Point2D center = new Point2D.Float(((i) * 75) + 75 / 2, ((j) * 75) + 75 / 2);
-                                        float radius = 75 / 2 + 10;
-                                        Color[] colors = {new Color(255, 0, 0), new Color(0, 0, 0, 0)};
-                                        float[] dist = {0.5f, 1.0f};
-                                        RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
-                                        graphic.setPaint(gradient);
-                                        graphic.fill(new Rectangle2D.Double(((i) * 75), ((j) * 75), 75, 75));
-                                    }
-                                }
-
-                            }
-                            image = Toolkit.getDefaultToolkit().getImage("PiecesImages\\" + pieceImage + ".png");
-                            graphic.drawImage(image, (i * 75), (j * 75), 75, 75, board);
-                        }
-                    }
+    private void gameField() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Piece p;
+                if (game.getTurn()) {
+                    p = game.getPiece(7 - j, i);
+                } else {
+                    p = game.getPiece(j, 7 - i);
                 }
-                if (chessBoard.getIsPromoting() == true) 
-                {
-                    String[] pieces = new String[]{"Queen", "Knight", "Rook", "Bishop"};
+                if (p != null) {
                     Image image;
-                    for (int i = 0; i < 4; i++) 
-                    {
-                        if (game.getTurn()) 
-                        {
-                            image = Toolkit.getDefaultToolkit().getImage("PiecesImages\\White" + pieces[i] + ".png");
-                        } 
-                        else
-                        {
-                            image = Toolkit.getDefaultToolkit().getImage("PiecesImages\\Black" + pieces[i] + ".png");
-                        }
-                        Point2D center = new Point2D.Float((chessBoard.getPromotionColumn() * 75) + 75 / 2, ((chessBoard.getPromotionRow() + i) * 75) + 75 / 2);
-                        float radius = 75 / 2 + 12;
-                        Color[] colors = {new Color(175, 175, 175), new Color(0, 0, 0, 0)};
-                        float[] dist = {0.5f, 1.0f};
-                        RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
-                        graphic.setPaint(gradient);
-                        graphic.fill(new Ellipse2D.Double((chessBoard.getPromotionColumn() * 75), ((chessBoard.getPromotionRow() + i) * 75), 75, 75));
-                        graphic.drawImage(image, (chessBoard.getPromotionColumn() * 75), ((chessBoard.getPromotionRow() + i) * 75), 75, 75, board);
+                    String pieceImage = "";
+
+                    if (p.getColor()) {
+                        pieceImage = "White" + p.toString();
+                    } else {
+                        pieceImage = "Black" + p.toString();
                     }
+
+                    if (p instanceof King) {
+                        if (!game.isKingSafe('b') && p.getColor() || !game.isKingSafe('w') && !p.getColor()) {
+                            Point2D center = new Point2D.Float((i * SIDE_LENGTH) + SIDE_LENGTH / 2, (j * SIDE_LENGTH) + SIDE_LENGTH / 2);
+                            float radius = SIDE_LENGTH / 2 + 10;
+                            Color[] colors = {RED_COLOR, TRANSPARENT_COLOR};
+                            float[] dist = {0.5f, 1.0f};
+                            RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
+                            graphic.setPaint(gradient);
+                            graphic.fill(new Rectangle2D.Double((i * SIDE_LENGTH), (j * SIDE_LENGTH), SIDE_LENGTH, SIDE_LENGTH));
+                        }
+                    }
+
+                    image = Toolkit.getDefaultToolkit().getImage("PiecesImages\\" + pieceImage + ".png");
+                    graphic.drawImage(image, (i * SIDE_LENGTH), (j * SIDE_LENGTH), SIDE_LENGTH, SIDE_LENGTH, board);
                 }
             }
+        }
+        if (getIsPromoting() == true) {
+            String[] pieces = new String[]{"Queen", "Knight", "Rook", "Bishop"};
+            Image image;
+            for (int i = 0; i < 4; i++) {
+                if (game.getTurn()) {
+                    image = Toolkit.getDefaultToolkit().getImage("PiecesImages\\White" + pieces[i] + ".png");
+                } else {
+                    image = Toolkit.getDefaultToolkit().getImage("PiecesImages\\Black" + pieces[i] + ".png");
+                }
+                Point2D center = new Point2D.Float((getPromotionColumn() * SIDE_LENGTH) + SIDE_LENGTH / 2, ((getPromotionRow() + i) * SIDE_LENGTH) + SIDE_LENGTH / 2);
+                float radius = SIDE_LENGTH / 2 + 12;
+                Color[] colors = {GREY_COLOR, TRANSPARENT_COLOR};
+                float[] dist = {0.5f, 1.0f};
+                RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
+                graphic.setPaint(gradient);
+                graphic.fill(new Ellipse2D.Double((getPromotionColumn() * SIDE_LENGTH), ((getPromotionRow() + i) * SIDE_LENGTH), SIDE_LENGTH, SIDE_LENGTH));
+                graphic.drawImage(image, (getPromotionColumn() * SIDE_LENGTH), ((getPromotionRow() + i) * SIDE_LENGTH), SIDE_LENGTH, SIDE_LENGTH, board);
+            }
+        }
+    }
 
-    public static JPanel panelSetup(ChessGUI chessBoard, ChessGame game) {
-        
-        JPanel board;
+    private void panelSetup() {
+
         board = new JPanel(new GridLayout()) {
             @Override
             public void paint(Graphics graphic1d) {
-                Graphics2D graphic = (Graphics2D) graphic1d;
-                
+                graphic = (Graphics2D) graphic1d;
+
                 graphic.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 graphic.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-                
-                boardSetup(chessBoard, game, graphic);
 
-                gameRun(chessBoard, game, graphic, this);
-                
+                boardSetup();
+
+                gameField();
+
             }
         };
-        return board;
     }
 
-    public static void mouseActions(ChessGUI chessBoard, ChessGame game, JFrame chess){
-        
-        MouseListener mouse = new MouseListener() {
+    private void mouseActions() {
+
+        mouse = new MouseListener() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
 
                 Piece selectedPiece;
                 char[][] validMoves = ChessGame.generateBoard();
-                if (chessBoard.getCurrentRow() == -1 || chessBoard.getCurrentColumn() == -1) {
-                    chessBoard.setCurrentRow(e.getY() / SIDE_LENGTH);
-                    chessBoard.setCurrentColumn(e.getX() / SIDE_LENGTH);
+                if (getCurrentRow() == -1 || getCurrentColumn() == -1) {
+                    setCurrentRow(e.getY() / SIDE_LENGTH);
+                    setCurrentColumn(e.getX() / SIDE_LENGTH);
                     if (game.getTurn()) {
-                        selectedPiece = game.getPiece(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn());
+                        selectedPiece = game.getPiece(7 - getCurrentRow(), getCurrentColumn());
                     } else {
-                        selectedPiece = game.getPiece(chessBoard.getCurrentRow(), 7 - chessBoard.getCurrentColumn());
+                        selectedPiece = game.getPiece(getCurrentRow(), 7 - getCurrentColumn());
                     }
                     if (selectedPiece != null) {
                         validMoves = game.allValidMoves(selectedPiece, false);
@@ -362,94 +262,77 @@ public class ChessGUI {
                     chess.repaint();
                 } else {
                     if (game.getTurn()) {
-                        selectedPiece = game.getPiece(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn());
+                        selectedPiece = game.getPiece(7 - getCurrentRow(), getCurrentColumn());
                     } else {
-                        selectedPiece = game.getPiece(chessBoard.getCurrentRow(), 7 - chessBoard.getCurrentColumn());
+                        selectedPiece = game.getPiece(getCurrentRow(), 7 - getCurrentColumn());
                     }
                     if (selectedPiece != null) {
                         validMoves = game.allValidMoves(selectedPiece, false);
                     }
-                    if (selectedPiece instanceof Pawn && chessBoard.getIsPromoting() == false
+                    if (selectedPiece instanceof Pawn && getIsPromoting() == false
                             && ((selectedPiece.getColor() && validMoves[7 - e.getY() / SIDE_LENGTH][e.getX() / SIDE_LENGTH] != 'f' && 7 - e.getY() / SIDE_LENGTH == 7)
                             || (!selectedPiece.getColor() && validMoves[e.getY() / SIDE_LENGTH][7 - e.getX() / SIDE_LENGTH] != 'f' && 7 - e.getY() / SIDE_LENGTH == 7))) {
-                        chessBoard.setPromotionRow(e.getY() / SIDE_LENGTH);
-                        chessBoard.setPromotionColumn(e.getX() / SIDE_LENGTH);
-                        chessBoard.setIsPromoting(true);
+                        setPromotionRow(e.getY() / SIDE_LENGTH);
+                        setPromotionColumn(e.getX() / SIDE_LENGTH);
+                        setIsPromoting(true);
                         chess.repaint();
-                    } else if (chessBoard.getIsPromoting() == false) {
+                    } else if (getIsPromoting() == false) {
                         if (game.getTurn()) {
-                            chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+                            moveGUI(Calculations.reverseCalcPosition(7 - getCurrentRow(), getCurrentColumn()),
                                     Calculations.reverseCalcPosition(7 - e.getY() / SIDE_LENGTH, e.getX() / SIDE_LENGTH));
                         } else {
-                            chessBoard.moveGUI(Calculations.reverseCalcPosition(chessBoard.getCurrentRow(), 7 - chessBoard.getCurrentColumn()),
+                            moveGUI(Calculations.reverseCalcPosition(getCurrentRow(), 7 - getCurrentColumn()),
                                     Calculations.reverseCalcPosition(e.getY() / SIDE_LENGTH, 7 - e.getX() / SIDE_LENGTH));
                         }
-                        chessBoard.setCurrentRow(-1);
-                        chessBoard.setCurrentColumn(-1);
+                        setCurrentRow(-1);
+                        setCurrentColumn(-1);
                         chess.repaint();
                     } else {
                         int r = 7 - e.getY() / SIDE_LENGTH;
                         int c = e.getX() / SIDE_LENGTH;
                         char prom = 'x';
-                        if (c == chessBoard.getPromotionColumn() && r == 7) {
+                        if (c == getPromotionColumn() && r == 7) {
                             prom = 'q';
                             if (game.getTurn()) {
-                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+                                moveGUI(Calculations.reverseCalcPosition(7 - getCurrentRow(), getCurrentColumn()),
                                         Calculations.reverseCalcPosition(7, e.getX() / SIDE_LENGTH), prom);
                             } else {
-                                chessBoard.moveGUI(Calculations.reverseCalcPosition(chessBoard.getCurrentRow(), 7 - chessBoard.getCurrentColumn()),
+                                moveGUI(Calculations.reverseCalcPosition(getCurrentRow(), 7 - getCurrentColumn()),
                                         Calculations.reverseCalcPosition(7 - 7, 7 - e.getX() / SIDE_LENGTH), prom);
                             }
 
-                            chessBoard.setCurrentRow(-1);
-                            chessBoard.setCurrentColumn(-1);
-                            chessBoard.setIsPromoting(false);
-                            chess.repaint();
-                        } else if (c == chessBoard.getPromotionColumn() && r == 6) {
+                        } else if (c == getPromotionColumn() && r == 6) {
                             prom = 'k';
                             if (game.getTurn()) {
-                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+                                moveGUI(Calculations.reverseCalcPosition(7 - getCurrentRow(), getCurrentColumn()),
                                         Calculations.reverseCalcPosition(7, e.getX() / SIDE_LENGTH), prom);
                             } else {
-                                chessBoard.moveGUI(Calculations.reverseCalcPosition(chessBoard.getCurrentRow(), 7 - chessBoard.getCurrentColumn()),
+                                moveGUI(Calculations.reverseCalcPosition(getCurrentRow(), 7 - getCurrentColumn()),
                                         Calculations.reverseCalcPosition(7 - 7, 7 - e.getX() / SIDE_LENGTH), prom);
                             }
-                            chessBoard.setCurrentRow(-1);
-                            chessBoard.setCurrentColumn(-1);
-                            chessBoard.setIsPromoting(false);
-                            chess.repaint();
-                        } else if (c == chessBoard.getPromotionColumn() && r == 5) {
+                        } else if (c == getPromotionColumn() && r == 5) {
                             prom = 'r';
                             if (game.getTurn()) {
-                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+                                moveGUI(Calculations.reverseCalcPosition(7 - getCurrentRow(), getCurrentColumn()),
                                         Calculations.reverseCalcPosition(7, e.getX() / SIDE_LENGTH), prom);
                             } else {
-                                chessBoard.moveGUI(Calculations.reverseCalcPosition(chessBoard.getCurrentRow(), 7 - chessBoard.getCurrentColumn()),
+                                moveGUI(Calculations.reverseCalcPosition(getCurrentRow(), 7 - getCurrentColumn()),
                                         Calculations.reverseCalcPosition(7 - 7, 7 - e.getX() / SIDE_LENGTH), prom);
                             }
-                            chessBoard.setCurrentRow(-1);
-                            chessBoard.setCurrentColumn(-1);
-                            chessBoard.setIsPromoting(false);
-                            chess.repaint();
-                        } else if (c == chessBoard.getPromotionColumn() && r == 4) {
+                        } else if (c == getPromotionColumn() && r == 4) {
                             prom = 'b';
                             if (game.getTurn()) {
-                                chessBoard.moveGUI(Calculations.reverseCalcPosition(7 - chessBoard.getCurrentRow(), chessBoard.getCurrentColumn()),
+                                moveGUI(Calculations.reverseCalcPosition(7 - getCurrentRow(), getCurrentColumn()),
                                         Calculations.reverseCalcPosition(7, e.getX() / SIDE_LENGTH), prom);
                             } else {
-                                chessBoard.moveGUI(Calculations.reverseCalcPosition(chessBoard.getCurrentRow(), 7 - chessBoard.getCurrentColumn()),
+                                moveGUI(Calculations.reverseCalcPosition(getCurrentRow(), 7 - getCurrentColumn()),
                                         Calculations.reverseCalcPosition(7 - 7, 7 - e.getX() / SIDE_LENGTH), prom);
                             }
-                            chessBoard.setCurrentRow(-1);
-                            chessBoard.setCurrentColumn(-1);
-                            chessBoard.setIsPromoting(false);
-                            chess.repaint();
-                        } else {
-                            chessBoard.setCurrentRow(-1);
-                            chessBoard.setCurrentColumn(-1);
-                            chessBoard.setIsPromoting(false);
-                            chess.repaint();
                         }
+                        setCurrentRow(-1);
+                        setCurrentColumn(-1);
+                        setIsPromoting(false);
+                        chess.repaint();
                     }
                 }
             }
@@ -470,31 +353,29 @@ public class ChessGUI {
             public void mouseExited(MouseEvent e) {
             }
         };
-        chess.getContentPane().addMouseListener(mouse);
-    }
-    
-    public static void main(String[] args) {
-        ChessGUI chessBoard = new ChessGUI();
-        ChessGame game = chessBoard.getGame();
-
-        JFrame chess = new JFrame();
-        frameSetup(chess);
-
-        JPanel board = panelSetup(chessBoard, game);
-
-        mouseActions(chessBoard, game, chess);
-        
-        chess.add(board);
-        chess.setVisible(true);
     }
 
-    public void moveGUI(String from, String to, char promoteTo) {
+    private void moveGUI(String from, String to, char promoteTo) {
         String state = game.move(from, to, promoteTo);
         System.out.println(state);
     }
 
-    public void moveGUI(String from, String to) {
+    private void moveGUI(String from, String to) {
         moveGUI(from, to, 'x');
+    }
+
+    public void run() {
+
+        frameSetup();
+
+        panelSetup();
+
+        chess.add(board);
+        chess.setVisible(true);
+
+        mouseActions();
+
+        chess.getContentPane().addMouseListener(mouse);
     }
 
 }

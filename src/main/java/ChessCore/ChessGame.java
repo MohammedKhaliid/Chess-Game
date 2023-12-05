@@ -48,13 +48,12 @@ public class ChessGame {
     public static boolean inBoard(int row, int column) {
         return (row >= 0 && row < 8 && column >= 0 && column < 8);
     }
-    
-    public boolean getTurn()
-    {
+
+    public boolean getTurn() {
         return whiteTurn;
     }
-    public boolean getGameOver()
-    {
+
+    public boolean getGameOver() {
         return gameOver;
     }
 
@@ -410,7 +409,7 @@ public class ChessGame {
         for (int j = 0; j < 2; j++) {
             for (int i = 0; i < 8; i++) {
                 if (black[j][i].getIsCaptured() == false) {
-                    if (j == 1) {
+                    if (black[j][i] instanceof Pawn) {
                         bl[0]++;
                     } else if (black[j][i] instanceof Rook) {
                         bl[1]++;
@@ -423,7 +422,7 @@ public class ChessGame {
                     }
                 }
                 if (white[j][i].getIsCaptured() == false) {
-                    if (j == 1) {
+                    if (white[j][i] instanceof Pawn) {
                         wh[0]++;
                     } else if (white[j][i] instanceof Rook) {
                         wh[1]++;
@@ -603,7 +602,7 @@ public class ChessGame {
     public Piece getPiece(int i, int j) {
         return board[i][j];
     }
-    
+
     private void printBoard() {
         for (int i = 7; i >= 0; i--) {
             for (int j = 0; j < 8; j++) {
@@ -618,4 +617,4 @@ public class ChessGame {
         System.out.println("------------------------------------------------");
     }
 
-    }
+}
