@@ -11,6 +11,10 @@ public class HistoryManager {
     }
     
     public void revert(TestChessGamee game){
+        if(states.size() == 0)
+        {
+            return;
+        }
         game.revert(states.pop());
         System.out.println("size of stack : "+states.size());
 

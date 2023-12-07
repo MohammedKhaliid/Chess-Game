@@ -5,16 +5,12 @@ import ChessCore.*;
 public class TestChessGamee {
 
     private Piece[][] board = new Piece[8][8];
-//    private Piece[][] white = new Piece[2][8];
-//    private Piece[][] black = new Piece[2][8];
     private boolean gameOver;
     private int[] lastMoved;
     private boolean whiteTurn;
 
     public TestChessGamee() {
         board = BoardInitializer.boardInit();
-//        black = BoardInitializer.blackInit(board);
-//        white = BoardInitializer.whiteInit(board);
         lastMoved = new int[2];
         lastMoved[0] = -1;
         lastMoved[1] = -1;
@@ -22,7 +18,6 @@ public class TestChessGamee {
         gameOver = false;
     }
 
-    //validation class (next two methods), use proper names
     public static boolean inBoard(int row, int column) {
         return (row >= 0 && row < 8 && column >= 0 && column < 8);
     }
@@ -41,7 +36,6 @@ public class TestChessGamee {
 
     public State save() {
         State currentState = new State(board, lastMoved, whiteTurn, gameOver);
-//        System.out.println(currentState);
         System.out.println("last moved: row: " + lastMoved[1] + " column: " + lastMoved[0]);
 
         return currentState;
@@ -50,15 +44,12 @@ public class TestChessGamee {
     public void revert(State prevState) {
         printBoard();
         this.board = prevState.getBoard();
-//        this.black = prevState.getBlack();
-//        this.white = prevState.getWhite();
         this.whiteTurn = prevState.getWhiteTurn();
         this.lastMoved = prevState.getLastMoved();
         this.gameOver = prevState.getGameOver();
         printBoard();
         System.out.println(whiteTurn);
         System.out.println("last moved: row: " + lastMoved[1] + " column: " + lastMoved[0]);
-//        System.out.println(whiteTurn);
     }
 
     public String getKingPosition(boolean color) {
@@ -77,18 +68,16 @@ public class TestChessGamee {
         //type black then check if white king safe       
         //type white then check if black king safe
 
-        if (pieceType == 'b') {/////////////////////////////////
+        if (pieceType == 'b') {
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
                     if (board[i][j] == null) {
                         continue;
                     }
-
                     if (board[i][j].getColor() != false) {
                         continue;
                     }
                     char[][] danger = this.testAllValidMoves(board[i][j]);
-                    //create method position of King
                     int[] whiteKingCoordinates = Calculations.calcPosition(getKingPosition(true));
                     if (danger[whiteKingCoordinates[1]][whiteKingCoordinates[0]] == 't') {
                         return false;
@@ -105,7 +94,6 @@ public class TestChessGamee {
                         continue;
                     }
                     char[][] danger = this.testAllValidMoves(board[i][j]);
-                    //create method position of King
                     int[] blackKingCoordinates = Calculations.calcPosition(getKingPosition(false));
                     if (danger[blackKingCoordinates[1]][blackKingCoordinates[0]] == 't') {
                         return false;
@@ -361,12 +349,6 @@ public class TestChessGamee {
     }
 
     private boolean isStalemate() {
-//        Piece[][] piece;
-//        if (whiteTurn) {
-//            piece = white;
-//        } else {
-//            piece = black;
-//        }
 
         char[][] blackIthBoard = BoardInitializer.generateBoard();
         char[][] whiteIthBoard = BoardInitializer.generateBoard();
@@ -381,7 +363,6 @@ public class TestChessGamee {
                         blackIthBoard = allValidMoves(board[i][j]);
                     }
                 }
-
                 for (int k = 0; k < 8; k++) {
                     for (int m = 0; m < 8; m++) {
                         if (whiteTurn) {
@@ -405,12 +386,7 @@ public class TestChessGamee {
 
         Piece p = null;
 
-//        String initPos = board[row][column].getInitPosition();
         String pos = Calculations.reverseCalcPosition(row, column);
-
-//        int[] initialCoord = Calculations.calcPosition(initPos);
-//        int initialCol = initialCoord[0];
-//        int initialRow = initialCoord[1];
 
         switch (promotTo) {
             case 'K':
@@ -430,11 +406,7 @@ public class TestChessGamee {
                 p = new Queen(pos, whiteTurn);
                 break;
         }
-//        if (whiteTurn) {
-//            white[1][initialCol] = p;
-//        } else {
-//            black[1][initialCol] = p;
-//        }
+
         board[row][column] = p;
     }
 
@@ -462,32 +434,6 @@ public class TestChessGamee {
                         }
                     }
                 }
-//                if (black[j][i].getIsCaptured() == false) {
-//                    if (black[j][i] instanceof Pawn) {
-//                        bl[0]++;
-//                    } else if (black[j][i] instanceof Rook) {
-//                        bl[1]++;
-//                    } else if (black[j][i] instanceof Knight) {
-//                        bl[2]++;
-//                    } else if (black[j][i] instanceof Bishop) {
-//                        bl[3]++;
-//                    } else if (black[j][i] instanceof Queen) {
-//                        bl[4]++;
-//                    }
-//                }
-//                if (white[j][i].getIsCaptured() == false) {
-//                    if (white[j][i] instanceof Pawn) {
-//                        wh[0]++;
-//                    } else if (white[j][i] instanceof Rook) {
-//                        wh[1]++;
-//                    } else if (white[j][i] instanceof Knight) {
-//                        wh[2]++;
-//                    } else if (white[j][i] instanceof Bishop) {
-//                        wh[3]++;
-//                    } else if (white[j][i] instanceof Queen) {
-//                        wh[4]++;
-//                    }
-//                }
             }
         }
         if (wh[0] == 0 && bl[0] == 0 && wh[1] == 0 && bl[1] == 0 && wh[4] == 0 && bl[4] == 0) {

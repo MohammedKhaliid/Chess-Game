@@ -52,7 +52,7 @@ public class ChessGUI {
         currentRow = currentColumn = -1;
         isPromoting = false;
         historyManager = new HistoryManager();
-        withFlip = false;
+        withFlip = true;
         moveState = "";
     }
 
@@ -393,18 +393,38 @@ public class ChessGUI {
 
         System.out.println(moveState);
 
-        if (!moveState.equals("Invalid move\n")) {
+        if ((!moveState.equals("Invalid move\n") && simulateMove(from, to))
+                || (moveState.equals("Invalid move\n") && simulateMove(from, to))) {
             historyManager.save(game);
             System.out.println("Saved!!");
         }
-        
         moveState = game.move(from, to, promoteTo);
-
         //handling invalid moves
     }
 
     private void moveGUI(String from, String to) {
         moveGUI(from, to, 'x');
+    }
+
+    public boolean simulateMove(String from, String to) {
+        char[][] canMoveToBoard = BoardInitializer.generateBoard();
+        int[] fromCoordinates = Calculations.calcPosition(from);
+        int fromRow = fromCoordinates[1];
+        int fromColumn = fromCoordinates[0];
+        int[] toCoordinates = Calculations.calcPosition(to);
+        int toRow = toCoordinates[1];
+        int toColumn = toCoordinates[0];
+        Piece movingPiece = game.getPiece(fromRow, fromColumn);
+        Piece capturedPiece = game.getPiece(toRow, toRow);
+
+        if (movingPiece == null || !movingPiece.isValidMove(from, to) || capturedPiece instanceof King || (game.getTurn() && !movingPiece.getColor()) || (!game.getTurn() && movingPiece.getColor())) {
+            return false;
+        }
+        canMoveToBoard = game.allValidMoves(movingPiece);
+        if (canMoveToBoard[toRow][toColumn] == 'f') {
+            return false;
+        }
+        return true;
     }
 
     public void run() {
