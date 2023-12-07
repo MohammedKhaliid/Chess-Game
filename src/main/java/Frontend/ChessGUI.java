@@ -1,6 +1,7 @@
 package Frontend;
 
 import ChessCore.*;
+import test.TestChessGamee;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -9,6 +10,8 @@ import java.awt.Image;
 import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
@@ -30,7 +33,7 @@ public class ChessGUI {
     public static final Color RED_COLOR = new Color(255, 0, 0);
     public static final Color GREY_COLOR = new Color(175, 175, 175);
 
-    private final ChessGame game;
+    private final TestChessGamee game;
     private int currentRow, currentColumn;
     private int promotionRow, promotionColumn;
     private boolean isPromoting;
@@ -38,12 +41,19 @@ public class ChessGUI {
     private JPanel board;
     private Graphics2D graphic;
     private MouseListener mouse;
+    private KeyListener undoKey;
+    private HistoryManager historyManager;
+    private boolean withFlip;
+    private String moveState;
 
     public ChessGUI() {
-        game = new ChessGame();
+        game = new TestChessGamee();
         chess = new JFrame();
         currentRow = currentColumn = -1;
         isPromoting = false;
+        historyManager = new HistoryManager();
+        withFlip = false;
+        moveState = "";
     }
 
     public boolean getIsPromoting() {
@@ -66,7 +76,7 @@ public class ChessGUI {
         return promotionColumn;
     }
 
-    public ChessGame getGame() {
+    public TestChessGamee getGame() {
         return this.game;
     }
 
@@ -113,7 +123,7 @@ public class ChessGUI {
                 if (getCurrentRow() != -1 && getCurrentColumn() != -1) {
 
                     Piece selectedPiece;
-                    if (game.getTurn()) {
+                    if (game.getTurn() || !withFlip) {
                         selectedPiece = game.getPiece(7 - getCurrentRow(), getCurrentColumn());
                     } else {
                         selectedPiece = game.getPiece(getCurrentRow(), 7 - getCurrentColumn());
@@ -132,14 +142,14 @@ public class ChessGUI {
                                     if (game.getPiece(7 - m, k) == null) {
                                         graphic.setColor(DARKGREEN_COLOR);
 
-                                        if (game.getTurn()) {
+                                        if (game.getTurn() || !withFlip) {
                                             graphic.fillOval((k * SIDE_LENGTH) + 25, (m * SIDE_LENGTH) + 25, 25, 25);
                                         } else {
                                             graphic.fillOval(((7 - k) * SIDE_LENGTH) + 25, ((7 - m) * SIDE_LENGTH) + 25, 25, 25);
                                         }
                                     } else {
                                         Point2D center;
-                                        if (game.getTurn()) {
+                                        if (game.getTurn() || !withFlip) {
                                             center = new Point2D.Float((k * SIDE_LENGTH) + SIDE_LENGTH / 2, (m * SIDE_LENGTH) + SIDE_LENGTH / 2);
                                         } else {
                                             center = new Point2D.Float(((7 - k) * SIDE_LENGTH) + SIDE_LENGTH / 2, ((7 - m) * SIDE_LENGTH) + SIDE_LENGTH / 2);
@@ -149,7 +159,7 @@ public class ChessGUI {
                                         float[] dist = {0.5f, 0.6f};
                                         RadialGradientPaint gradient = new RadialGradientPaint(center, radius, dist, colors);
                                         graphic.setPaint(gradient);
-                                        if (game.getTurn()) {
+                                        if (game.getTurn() || !withFlip) {
                                             graphic.fill(new Rectangle2D.Double((k * SIDE_LENGTH), (m * SIDE_LENGTH), SIDE_LENGTH, SIDE_LENGTH));
                                         } else {
                                             graphic.fill(new Rectangle2D.Double(((7 - k) * SIDE_LENGTH), ((7 - m) * SIDE_LENGTH), SIDE_LENGTH, SIDE_LENGTH));
@@ -168,7 +178,7 @@ public class ChessGUI {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Piece p;
-                if (game.getTurn()) {
+                if (game.getTurn() || !withFlip) {
                     p = game.getPiece(7 - j, i);
                 } else {
                     p = game.getPiece(j, 7 - i);
@@ -204,7 +214,7 @@ public class ChessGUI {
             String[] pieces = new String[]{"Queen", "Knight", "Rook", "Bishop"};
             Image image;
             for (int i = 0; i < 4; i++) {
-                if (game.getTurn()) {
+                if (game.getTurn() || !withFlip) {
                     image = Toolkit.getDefaultToolkit().getImage("PiecesImages\\White" + pieces[i] + ".png");
                 } else {
                     image = Toolkit.getDefaultToolkit().getImage("PiecesImages\\Black" + pieces[i] + ".png");
@@ -251,7 +261,7 @@ public class ChessGUI {
                 if (getCurrentRow() == -1 || getCurrentColumn() == -1) {
                     setCurrentRow(e.getY() / SIDE_LENGTH);
                     setCurrentColumn(e.getX() / SIDE_LENGTH);
-                    if (game.getTurn()) {
+                    if (game.getTurn() || !withFlip) {
                         selectedPiece = game.getPiece(7 - getCurrentRow(), getCurrentColumn());
                     } else {
                         selectedPiece = game.getPiece(getCurrentRow(), 7 - getCurrentColumn());
@@ -261,7 +271,7 @@ public class ChessGUI {
                     }
                     chess.repaint();
                 } else {
-                    if (game.getTurn()) {
+                    if (game.getTurn() || !withFlip) {
                         selectedPiece = game.getPiece(7 - getCurrentRow(), getCurrentColumn());
                     } else {
                         selectedPiece = game.getPiece(getCurrentRow(), 7 - getCurrentColumn());
@@ -277,7 +287,7 @@ public class ChessGUI {
                         setIsPromoting(true);
                         chess.repaint();
                     } else if (getIsPromoting() == false) {
-                        if (game.getTurn()) {
+                        if (game.getTurn() || !withFlip) {
                             moveGUI(Calculations.reverseCalcPosition(7 - getCurrentRow(), getCurrentColumn()),
                                     Calculations.reverseCalcPosition(7 - e.getY() / SIDE_LENGTH, e.getX() / SIDE_LENGTH));
                         } else {
@@ -293,7 +303,7 @@ public class ChessGUI {
                         char prom = 'x';
                         if (c == getPromotionColumn() && r == 7) {
                             prom = 'q';
-                            if (game.getTurn()) {
+                            if (game.getTurn() || !withFlip) {
                                 moveGUI(Calculations.reverseCalcPosition(7 - getCurrentRow(), getCurrentColumn()),
                                         Calculations.reverseCalcPosition(7, e.getX() / SIDE_LENGTH), prom);
                             } else {
@@ -303,7 +313,7 @@ public class ChessGUI {
 
                         } else if (c == getPromotionColumn() && r == 6) {
                             prom = 'k';
-                            if (game.getTurn()) {
+                            if (game.getTurn() || !withFlip) {
                                 moveGUI(Calculations.reverseCalcPosition(7 - getCurrentRow(), getCurrentColumn()),
                                         Calculations.reverseCalcPosition(7, e.getX() / SIDE_LENGTH), prom);
                             } else {
@@ -312,7 +322,7 @@ public class ChessGUI {
                             }
                         } else if (c == getPromotionColumn() && r == 5) {
                             prom = 'r';
-                            if (game.getTurn()) {
+                            if (game.getTurn() || !withFlip) {
                                 moveGUI(Calculations.reverseCalcPosition(7 - getCurrentRow(), getCurrentColumn()),
                                         Calculations.reverseCalcPosition(7, e.getX() / SIDE_LENGTH), prom);
                             } else {
@@ -321,7 +331,7 @@ public class ChessGUI {
                             }
                         } else if (c == getPromotionColumn() && r == 4) {
                             prom = 'b';
-                            if (game.getTurn()) {
+                            if (game.getTurn() || !withFlip) {
                                 moveGUI(Calculations.reverseCalcPosition(7 - getCurrentRow(), getCurrentColumn()),
                                         Calculations.reverseCalcPosition(7, e.getX() / SIDE_LENGTH), prom);
                             } else {
@@ -355,9 +365,42 @@ public class ChessGUI {
         };
     }
 
+    private void undoKeyAction() {
+        undoKey = new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                int keyCode = e.getKeyCode();
+//                System.out.println("Key typed" + keyCode + " " + KeyEvent.VK_LEFT);
+
+//                if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A) {
+                System.out.println("Undo key pressed");
+                historyManager.revert(game);
+                chess.repaint();
+//                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        };
+    }
+
     private void moveGUI(String from, String to, char promoteTo) {
-        String state = game.move(from, to, promoteTo);
-        System.out.println(state);
+
+        System.out.println(moveState);
+
+        if (!moveState.equals("Invalid move\n")) {
+            historyManager.save(game);
+            System.out.println("Saved!!");
+        }
+        
+        moveState = game.move(from, to, promoteTo);
+
+        //handling invalid moves
     }
 
     private void moveGUI(String from, String to) {
@@ -374,7 +417,9 @@ public class ChessGUI {
         chess.setVisible(true);
 
         mouseActions();
+        undoKeyAction();
 
+        chess.addKeyListener(undoKey);
         chess.getContentPane().addMouseListener(mouse);
     }
 

@@ -2,8 +2,8 @@ package ChessCore;
 
 public class Pawn extends Piece {
 
-    public Pawn(String initposition, String position, boolean color) {
-        super(initposition, position, color);
+    public Pawn(String position, boolean color) {
+        super(position, color);
     }
 
     @Override

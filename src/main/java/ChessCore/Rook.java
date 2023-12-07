@@ -2,8 +2,8 @@ package ChessCore;
 
 public class Rook extends Piece {
 
-    public Rook(String initposition, String position, boolean color) {
-        super(initposition, position, color);
+    public Rook(String position, boolean color) {
+        super(position, color);
     }
 
     @Override

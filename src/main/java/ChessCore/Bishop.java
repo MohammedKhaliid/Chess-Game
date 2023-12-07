@@ -2,8 +2,8 @@ package ChessCore;
 
 public class Bishop extends Piece {
 
-    public Bishop(String initposition, String position, boolean color) {
-        super(initposition, position, color);
+    public Bishop(String position, boolean color) {
+        super(position, color);
     }
 
     @Override

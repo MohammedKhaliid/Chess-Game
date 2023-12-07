@@ -2,8 +2,8 @@ package ChessCore;
 
 public class King extends Piece {
 
-    public King(String initposition, String position, boolean color) {
-        super(initposition, position, color);
+    public King(String position, boolean color) {
+        super(position, color);
     }
 
     @Override

@@ -6,26 +6,26 @@ public class BoardInitializer {
         Piece[][] board = new Piece[8][8];
 
         for (int i = 0; i < 8; i++) {
-            board[1][i] = new Pawn((char) ('A' + i) + "2", (char) ('A' + i) + "2", true);
-            board[6][i] = new Pawn((char) ('A' + i) + "7", (char) ('A' + i) + "7", false);
+            board[1][i] = new Pawn((char) ('A' + i) + "2", true);
+            board[6][i] = new Pawn((char) ('A' + i) + "7", false);
         }
-        board[0][0] = new Rook("A1", "A1", true);
-        board[0][1] = new Knight("B1", "B1", true);
-        board[0][2] = new Bishop("C1", "C1", true);
-        board[0][3] = new Queen("D1", "D1", true);
-        board[0][4] = new King("E1", "E1", true);
-        board[0][5] = new Bishop("F1", "F1", true);
-        board[0][6] = new Knight("G1", "G1", true);
-        board[0][7] = new Rook("H1", "H1", true);
+        board[0][0] = new Rook("A1", true);
+        board[0][1] = new Knight("B1", true);
+        board[0][2] = new Bishop( "C1", true);
+        board[0][3] = new Queen( "D1", true);
+        board[0][4] = new King( "E1", true);
+        board[0][5] = new Bishop( "F1", true);
+        board[0][6] = new Knight( "G1", true);
+        board[0][7] = new Rook( "H1", true);
 
-        board[7][0] = new Rook("A8", "A8", false);
-        board[7][1] = new Knight("B8", "B8", false);
-        board[7][2] = new Bishop("C8", "C8", false);
-        board[7][3] = new Queen("D8", "D8", false);
-        board[7][4] = new King("E8", "E8", false);
-        board[7][5] = new Bishop("F8", "F8", false);
-        board[7][6] = new Knight("G8", "G8", false);
-        board[7][7] = new Rook("H8", "H8", false);
+        board[7][0] = new Rook("A8", false);
+        board[7][1] = new Knight("B8", false);
+        board[7][2] = new Bishop("C8", false);
+        board[7][3] = new Queen("D8", false);
+        board[7][4] = new King("E8", false);
+        board[7][5] = new Bishop("F8", false);
+        board[7][6] = new Knight("G8", false);
+        board[7][7] = new Rook( "H8", false);
         
         return board;
     }
