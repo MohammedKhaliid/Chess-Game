@@ -247,7 +247,7 @@ public class ChessGUI {
             public void mouseClicked(MouseEvent e) {
 
                 Piece selectedPiece;
-                char[][] validMoves = ChessGame.generateBoard();
+                char[][] validMoves = BoardInitializer.generateBoard();
                 if (getCurrentRow() == -1 || getCurrentColumn() == -1) {
                     setCurrentRow(e.getY() / SIDE_LENGTH);
                     setCurrentColumn(e.getX() / SIDE_LENGTH);

@@ -1,6 +1,5 @@
 package ChessCore;
 
-import java.lang.reflect.Array;
 
 public class ChessGame {
 
@@ -11,39 +10,15 @@ public class ChessGame {
     private int[] lastMoved;
     private boolean whiteTurn;
 
-    //initializer class for the board initial state
     public ChessGame() {
-        board = new Piece[8][8];
-        white = new Piece[2][8];
-        black = new Piece[2][8];
+        board = BoardInitializer.boardInit();
+        black = BoardInitializer.blackInit(board);
+        white = BoardInitializer.whiteInit(board);
         lastMoved = new int[2];
         lastMoved[0] = -1;
         lastMoved[1] = -1;
         whiteTurn = true;
         gameOver = false;
-
-        for (int i = 0; i < 8; i++) {
-            white[1][i] = board[1][i] = new Pawn((char) ('A' + i) + "2", (char) ('A' + i) + "2", true);
-            black[1][i] = board[6][i] = new Pawn((char) ('A' + i) + "7", (char) ('A' + i) + "7", false);
-        }
-        white[0][0] = board[0][0] = new Rook("A1", "A1", true);
-        white[0][1] = board[0][1] = new Knight("B1", "B1", true);
-        white[0][2] = board[0][2] = new Bishop("C1", "C1", true);
-        white[0][3] = board[0][3] = new Queen("D1", "D1", true);
-        white[0][4] = board[0][4] = new King("E1", "E1", true);
-        white[0][5] = board[0][5] = new Bishop("F1", "F1", true);
-        white[0][6] = board[0][6] = new Knight("G1", "G1", true);
-        white[0][7] = board[0][7] = new Rook("H1", "H1", true);
-
-        black[0][0] = board[7][0] = new Rook("A8", "A8", false);
-        black[0][1] = board[7][1] = new Knight("B8", "B8", false);
-        black[0][2] = board[7][2] = new Bishop("C8", "C8", false);
-        black[0][3] = board[7][3] = new Queen("D8", "D8", false);
-        black[0][4] = board[7][4] = new King("E8", "E8", false);
-        black[0][5] = board[7][5] = new Bishop("F8", "F8", false);
-        black[0][6] = board[7][6] = new Knight("G8", "G8", false);
-        black[0][7] = board[7][7] = new Rook("H8", "H8", false);
-
     }
 
     //validation class (next two methods), use proper names
@@ -51,15 +26,7 @@ public class ChessGame {
         return (row >= 0 && row < 8 && column >= 0 && column < 8);
     }
 
-    public static char[][] generateBoard() {
-        char[][] x = new char[8][8];
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                x[i][j] = 'f';
-            }
-        }
-        return x;
-    }
+
 
     public boolean getTurn() {
         return whiteTurn;
@@ -67,6 +34,10 @@ public class ChessGame {
 
     public boolean getGameOver() {
         return gameOver;
+    }
+
+    public Piece getPiece(int i, int j) {
+        return board[i][j];
     }
 
     public boolean isKingSafe(char pieceType) {
@@ -105,7 +76,7 @@ public class ChessGame {
     }
 
     public char[][] testAllValidMoves(Piece p) {
-        char[][] all = generateBoard();
+        char[][] all = BoardInitializer.generateBoard();
         int[] pieceCoordinates = Calculations.calcPosition(p.getPosition());
         int column = pieceCoordinates[0];
         int row = pieceCoordinates[1];
@@ -255,12 +226,12 @@ public class ChessGame {
     }
 
     public char[][] allValidMoves(Piece p) {
-        
+
         char[][] all = testAllValidMoves(p);
         int[] pieceCoordinates = Calculations.calcPosition(p.getPosition());
         int column = pieceCoordinates[0];
         int row = pieceCoordinates[1];
-        
+
         if (p instanceof King) {
             if (p.getMovesNum() == 0) {
                 if (all[row][0] == 'l')//can castle left
@@ -356,7 +327,7 @@ public class ChessGame {
             piece = black;
         }
 
-        char[][] ithBoard = generateBoard();
+        char[][] ithBoard = BoardInitializer.generateBoard();
 
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 8; j++) {
@@ -483,7 +454,7 @@ public class ChessGame {
     public String move(String from, String to, char promoteTo) {
 
         String ret = "";
-        char[][] canMoveToBoard = generateBoard();
+        char[][] canMoveToBoard = BoardInitializer.generateBoard();
         int[] fromCoordinates = Calculations.calcPosition(from);
         int fromRow = fromCoordinates[1];
         int fromColumn = fromCoordinates[0];
@@ -608,10 +579,6 @@ public class ChessGame {
         printBoard();
 
         return ret;
-    }
-
-    public Piece getPiece(int i, int j) {
-        return board[i][j];
     }
 
     private void printBoard() {
