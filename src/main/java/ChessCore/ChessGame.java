@@ -1,6 +1,5 @@
 package ChessCore;
 
-
 public class ChessGame {
 
     private Piece board[][] = new Piece[8][8];
@@ -26,8 +25,6 @@ public class ChessGame {
         return (row >= 0 && row < 8 && column >= 0 && column < 8);
     }
 
-
-
     public boolean getTurn() {
         return whiteTurn;
     }
@@ -38,6 +35,19 @@ public class ChessGame {
 
     public Piece getPiece(int i, int j) {
         return board[i][j];
+    }
+
+    public State save() {
+        State currentState = new State(board, black, white, lastMoved, whiteTurn, gameOver);
+        return currentState;
+    }
+
+    public void revert(State prevState) {
+        this.board = prevState.getBoard();
+        this.black = prevState.getBlack();
+        this.white = prevState.getWhite();
+        this.whiteTurn = prevState.getWhiteTurn();
+        this.gameOver = prevState.getGameOver();
     }
 
     public boolean isKingSafe(char pieceType) {
