@@ -123,7 +123,7 @@ public class ChessGUI {
                                 graphic.setColor(new Color(88, 117, 75));
                                 graphic.fillRect((chessBoard.getCurrentColumn() * 75), (chessBoard.getCurrentRow() * 75), sideLength, sideLength);
 
-                                char[][] validMoves = game.allValidMoves(selectedPiece, false);
+                                char[][] validMoves = game.allValidMoves(selectedPiece);
 
                                 for (int k = 0; k < 8; k++) {
                                     for (int m = 0; m < 8; m++) {
@@ -271,7 +271,7 @@ public class ChessGUI {
                         selectedPiece = game.getPiece(chessBoard.getCurrentRow(), 7 - chessBoard.getCurrentColumn());
                     }
                     if (selectedPiece != null) {
-                        validMoves = game.allValidMoves(selectedPiece, false);
+                        validMoves = game.allValidMoves(selectedPiece);
                     }
                     chess.repaint();
                 } else {
@@ -281,7 +281,7 @@ public class ChessGUI {
                         selectedPiece = game.getPiece(chessBoard.getCurrentRow(), 7 - chessBoard.getCurrentColumn());
                     }
                     if (selectedPiece != null) {
-                        validMoves = game.allValidMoves(selectedPiece, false);
+                        validMoves = game.allValidMoves(selectedPiece);
                     }
                     if (selectedPiece instanceof Pawn && chessBoard.getIsPromoting() == false
                             && ((selectedPiece.getColor() && validMoves[7 - e.getY() / sideLength][e.getX() / sideLength] != 'f' && 7 - e.getY() / sideLength == 7)
