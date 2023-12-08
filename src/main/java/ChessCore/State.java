@@ -10,8 +10,6 @@ public class State {
 
     public State(Piece[][] board,int[] lastMoved, boolean whiteTurn, boolean gameOver) {
         this.board = StateCopy.copyBoard(board);
-//        this.black = black;
-//        this.white = white;
         this.lastMoved = StateCopy.copyLastMoved(lastMoved);
         this.whiteTurn = whiteTurn;
         this.gameOver = gameOver;
@@ -19,14 +17,6 @@ public class State {
 
     public Piece[][] getBoard() {
         return this.board;
-    }
-
-    public Piece[][] getWhite() {
-        return this.white;
-    }
-
-    public Piece[][] getBlack() {
-        return this.black;
     }
 
     public int[] getLastMoved() {
@@ -39,10 +29,6 @@ public class State {
 
     public boolean getGameOver() {
         return this.gameOver;
-    }
-    
-    public String toString(){
-        return whiteTurn+ "";
     }
 
 }

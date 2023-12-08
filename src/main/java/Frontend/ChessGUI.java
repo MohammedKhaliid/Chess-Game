@@ -46,8 +46,8 @@ public class ChessGUI {
     private Graphics2D graphic;
     private MouseListener mouse;
     private KeyListener undoKey;
-    private HistoryManager historyManager;
-    private boolean withFlip;
+    private final HistoryManager historyManager;
+    private final boolean withFlip;
     private Command command;
     private String moveState;
 

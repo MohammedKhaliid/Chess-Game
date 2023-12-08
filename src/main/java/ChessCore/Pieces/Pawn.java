@@ -44,9 +44,4 @@ public class Pawn extends Piece {
     {
         return "Pawn";
     }
-//    public static void main(String[] args) {
-//        Pawn p = new Pawn("E2", true);
-//        
-//        System.out.println(p.isValidMove("E2", "G4"));
-//    }
 }
