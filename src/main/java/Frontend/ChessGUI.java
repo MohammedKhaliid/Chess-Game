@@ -369,18 +369,20 @@ public class ChessGUI {
         undoKey = new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
-                int keyCode = e.getKeyCode();
-//                System.out.println("Key typed" + keyCode + " " + KeyEvent.VK_LEFT);
-
-//                if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A) {
-                System.out.println("Undo key pressed");
-                historyManager.revert(game);
-                chess.repaint();
-//                }
+                
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
+                System.out.println(e.getKeyCode());
+                
+                System.out.println(e.isControlDown());
+
+                if ((e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Z) || e.getKeyCode() == KeyEvent.VK_LEFT) {
+                    System.out.println("Undo key pressed");
+                    historyManager.revert(game);
+                    chess.repaint();
+                }
             }
 
             @Override
