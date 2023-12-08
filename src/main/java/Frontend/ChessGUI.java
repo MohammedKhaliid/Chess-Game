@@ -48,6 +48,7 @@ public class ChessGUI {
     private KeyListener undoKey;
     private HistoryManager historyManager;
     private boolean withFlip;
+    private Command command;
     private String moveState;
 
     public ChessGUI() {
@@ -80,8 +81,15 @@ public class ChessGUI {
         return promotionColumn;
     }
 
-    public ChessGame getGame() {
-        return this.game;
+    public void setCommand(Command command){
+        this.command = command;
+    }
+    public void pressKey(){
+        command.execute(game);
+        setCurrentRow(-1);
+        setCurrentColumn(-1);
+        setIsPromoting(false);
+        chess.repaint();
     }
 
     public void setIsPromoting(boolean isPromoting) {
@@ -104,9 +112,11 @@ public class ChessGUI {
         this.promotionRow = promotionRow;
     }
 
+
     //methods
     private void frameSetup() {
         chess.setSize(600 + 8 * 2, 600 + 8 * 2);
+        chess.setBackground(Color.BLACK);
         chess.setLocationRelativeTo(null);
         chess.setUndecorated(true);
         Border border = BorderFactory.createLineBorder(Color.BLACK, 8);
@@ -369,40 +379,26 @@ public class ChessGUI {
         };
     }
 
-    private void undoKeyAction() {
+    private void keyActions() {
+        Command undo = new UndoCommand(historyManager);
+        Command redo = new RedoCommand(historyManager);
+
         undoKey = new KeyListener() {
             @Override
-            public void keyTyped(KeyEvent e) {
-
-            }
-
+            public void keyTyped(KeyEvent e) {}
             @Override
             public void keyPressed(KeyEvent e) {
-                System.out.println(e.getKeyCode());
-
-                System.out.println(e.isControlDown());
-
                 if ((e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Z) || e.getKeyCode() == KeyEvent.VK_LEFT) {
-                    System.out.println("Undo key pressed");
-                    historyManager.revert(game);
-                    setCurrentRow(-1);
-                    setCurrentColumn(-1);
-                    setIsPromoting(false);
-                    chess.repaint();
+                    setCommand(undo);
+                    pressKey();
                 }
                 if ((e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Y) || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    System.out.println("Redo key pressed");
-                    historyManager.redo(game);
-                    setCurrentRow(-1);
-                    setCurrentColumn(-1);
-                    setIsPromoting(false);
-                    chess.repaint();
+                    setCommand(redo);
+                    pressKey();
                 }
             }
-
             @Override
-            public void keyReleased(KeyEvent e) {
-            }
+            public void keyReleased(KeyEvent e) {}
         };
     }
 
@@ -455,7 +451,7 @@ public class ChessGUI {
         chess.setVisible(true);
 
         mouseActions();
-        undoKeyAction();
+        keyActions();
 
         chess.addKeyListener(undoKey);
         chess.getContentPane().addMouseListener(mouse);

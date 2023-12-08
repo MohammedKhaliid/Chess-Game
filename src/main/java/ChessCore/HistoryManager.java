@@ -11,17 +11,16 @@ public class HistoryManager {
         undoStates.push(game.save());
     }
 
-    public void revert(ChessGame game) {
+    public void redoSave(ChessGame game) {
+        redoStates.push(game.save());
+    }
+    public void undo(ChessGame game) {
         if (undoStates.isEmpty()) {
             return;
         }
         redoSave(game);
         game.revert(undoStates.pop());
         System.out.println("size of undoStack : " + undoStates.size());
-    }
-
-    public void redoSave(ChessGame game) {
-        redoStates.push(game.save());
     }
 
     public void redo(ChessGame game) {
