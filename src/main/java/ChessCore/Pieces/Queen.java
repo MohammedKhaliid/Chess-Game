@@ -1,13 +1,14 @@
-package ChessCore;
+package ChessCore.Pieces;
 
-public class Rook extends Piece {
+import ChessCore.Calculations;
 
-    public Rook(String position, boolean color) {
+public class Queen extends Piece {
+
+    public Queen(String position, boolean color) {
         super(position, color);
     }
 
     @Override
-
     public boolean isValidMove(String from, String to) {
         int[] relativePos = Calculations.calcDistance(from, to);
         int x = relativePos[0];
@@ -18,10 +19,15 @@ public class Rook extends Piece {
             return true;
         }
 
+        if (Math.abs(x) == Math.abs(y) && x != 0) //Diagnoal move
+        {
+            return true;
+        }
+
         return false;
     }
     public String toString()
     {
-        return "Rook";
+        return "Queen";
     }
 }

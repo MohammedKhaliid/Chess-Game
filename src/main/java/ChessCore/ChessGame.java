@@ -1,6 +1,6 @@
 package ChessCore;
 
-import ChessCore.*;
+import ChessCore.Pieces.*;
 
 public class ChessGame {
 

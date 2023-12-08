@@ -1,4 +1,6 @@
-package ChessCore;
+package ChessCore.Pieces;
+
+import ChessCore.Calculations;
 
 public class King extends Piece {
 

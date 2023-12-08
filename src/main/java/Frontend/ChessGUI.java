@@ -2,6 +2,10 @@ package Frontend;
 
 import ChessCore.*;
 import ChessCore.ChessGame;
+import ChessCore.Pieces.King;
+import ChessCore.Pieces.Pawn;
+import ChessCore.Pieces.Piece;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
