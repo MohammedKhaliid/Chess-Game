@@ -1,7 +1,7 @@
 package Frontend;
 
 import ChessCore.*;
-import test.TestChessGamee;
+import ChessCore.ChessGame;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -33,7 +33,7 @@ public class ChessGUI {
     public static final Color RED_COLOR = new Color(255, 0, 0);
     public static final Color GREY_COLOR = new Color(175, 175, 175);
 
-    private final TestChessGamee game;
+    private final ChessGame game;
     private int currentRow, currentColumn;
     private int promotionRow, promotionColumn;
     private boolean isPromoting;
@@ -47,7 +47,7 @@ public class ChessGUI {
     private String moveState;
 
     public ChessGUI() {
-        game = new TestChessGamee();
+        game = new ChessGame();
         chess = new JFrame();
         currentRow = currentColumn = -1;
         isPromoting = false;
@@ -76,7 +76,7 @@ public class ChessGUI {
         return promotionColumn;
     }
 
-    public TestChessGamee getGame() {
+    public ChessGame getGame() {
         return this.game;
     }
 

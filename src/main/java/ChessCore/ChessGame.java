@@ -1,18 +1,16 @@
 package ChessCore;
 
+import ChessCore.*;
+
 public class ChessGame {
 
     private Piece[][] board = new Piece[8][8];
-    private Piece[][] white = new Piece[2][8];
-    private Piece[][] black = new Piece[2][8];
     private boolean gameOver;
     private int[] lastMoved;
     private boolean whiteTurn;
 
     public ChessGame() {
         board = BoardInitializer.boardInit();
-        black = BoardInitializer.blackInit(board);
-        white = BoardInitializer.whiteInit(board);
         lastMoved = new int[2];
         lastMoved[0] = -1;
         lastMoved[1] = -1;
@@ -20,7 +18,6 @@ public class ChessGame {
         gameOver = false;
     }
 
-    //validation class (next two methods), use proper names
     public static boolean inBoard(int row, int column) {
         return (row >= 0 && row < 8 && column >= 0 && column < 8);
     }
@@ -37,24 +34,33 @@ public class ChessGame {
         return board[i][j];
     }
 
-//    public State save() {
-//        State currentState = new State(board, black, white, lastMoved, whiteTurn, gameOver);
-//        System.out.println(currentState);
-//        return currentState;
-//    }
+    public State save() {
+        State currentState = new State(board, lastMoved, whiteTurn, gameOver);
+        System.out.println("last moved: row: " + lastMoved[1] + " column: " + lastMoved[0]);
+
+        return currentState;
+    }
 
     public void revert(State prevState) {
-//        printBoard(); 
+        printBoard();
         this.board = prevState.getBoard();
-        this.black = prevState.getBlack();
-        this.white = prevState.getWhite();
         this.whiteTurn = prevState.getWhiteTurn();
         this.lastMoved = prevState.getLastMoved();
         this.gameOver = prevState.getGameOver();
-//        printBoard(); 
-
-        System.out.println("last moved: " + lastMoved[0] + " " + lastMoved[1]);
+        printBoard();
         System.out.println(whiteTurn);
+        System.out.println("last moved: row: " + lastMoved[1] + " column: " + lastMoved[0]);
+    }
+
+    public String getKingPosition(boolean color) {
+        for (int j = 0; j < 8; j++) {
+            for (int i = 0; i < 8; i++) {
+                if (board[i][j] != null && board[i][j].getColor() == color && board[i][j] instanceof King) {
+                    return board[i][j].getPosition();
+                }
+            }
+        }
+        return null;
     }
 
     public boolean isKingSafe(char pieceType) {
@@ -63,26 +69,32 @@ public class ChessGame {
         //type white then check if black king safe
 
         if (pieceType == 'b') {
-            for (int j = 0; j < 2; j++) {
-                for (int i = 0; i < 8; i++) {
-                    if (black[j][i].getIsCaptured()) {
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (board[i][j] == null) {
                         continue;
                     }
-                    char[][] danger = this.testAllValidMoves(black[j][i]);
-                    int[] whiteKingCoordinates = Calculations.calcPosition(white[0][4].getPosition());
+                    if (board[i][j].getColor() != false) {
+                        continue;
+                    }
+                    char[][] danger = this.testAllValidMoves(board[i][j]);
+                    int[] whiteKingCoordinates = Calculations.calcPosition(getKingPosition(true));
                     if (danger[whiteKingCoordinates[1]][whiteKingCoordinates[0]] == 't') {
                         return false;
                     }
                 }
             }
         } else if (pieceType == 'w') {
-            for (int j = 0; j < 2; j++) {
-                for (int i = 0; i < 8; i++) {
-                    if (white[j][i].getIsCaptured()) {
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (board[i][j] == null) {
                         continue;
                     }
-                    char[][] danger = this.testAllValidMoves(white[j][i]);
-                    int[] blackKingCoordinates = Calculations.calcPosition(black[0][4].getPosition());
+                    if (board[i][j].getColor() != true) {
+                        continue;
+                    }
+                    char[][] danger = this.testAllValidMoves(board[i][j]);
+                    int[] blackKingCoordinates = Calculations.calcPosition(getKingPosition(false));
                     if (danger[blackKingCoordinates[1]][blackKingCoordinates[0]] == 't') {
                         return false;
                     }
@@ -337,30 +349,36 @@ public class ChessGame {
     }
 
     private boolean isStalemate() {
-        Piece[][] piece;
-        if (whiteTurn) {
-            piece = white;
-        } else {
-            piece = black;
-        }
 
-        char[][] ithBoard = BoardInitializer.generateBoard();
+        char[][] blackIthBoard = BoardInitializer.generateBoard();
+        char[][] whiteIthBoard = BoardInitializer.generateBoard();
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (piece[i][j].getIsCaptured() == false) {
-                    ithBoard = allValidMoves(piece[i][j]);
-                }
+                if (board[i][j] != null) {
 
+                    if (whiteTurn && board[i][j].getColor()) {
+                        whiteIthBoard = allValidMoves(board[i][j]);
+                    } else if (!whiteTurn && !board[i][j].getColor()) {
+                        blackIthBoard = allValidMoves(board[i][j]);
+                    }
+                }
                 for (int k = 0; k < 8; k++) {
                     for (int m = 0; m < 8; m++) {
-                        if (ithBoard[k][m] != 'f') {
-                            return false;
+                        if (whiteTurn) {
+                            if (whiteIthBoard[k][m] != 'f') {
+                                return false;
+                            }
+                        } else {
+                            if (blackIthBoard[k][m] != 'f') {
+                                return false;
+                            }
                         }
                     }
                 }
             }
         }
+
         return true;
     }
 
@@ -368,12 +386,7 @@ public class ChessGame {
 
         Piece p = null;
 
-//        String initPos = board[row][column].getInitPosition();
         String pos = Calculations.reverseCalcPosition(row, column);
-
-//        int[] initialCoord = Calculations.calcPosition(initPos);
-//        int initialCol = initialCoord[0];
-//        int initialRow = initialCoord[1];
 
         switch (promotTo) {
             case 'K':
@@ -393,11 +406,7 @@ public class ChessGame {
                 p = new Queen(pos, whiteTurn);
                 break;
         }
-//        if (whiteTurn) {
-//            white[1][initialCol] = p;
-//        } else {
-//            black[1][initialCol] = p;
-//        }
+
         board[row][column] = p;
     }
 
@@ -405,32 +414,24 @@ public class ChessGame {
         //pawns,rooks,knights,bishops,queen;
         int[] bl = new int[]{0, 0, 0, 0, 0};
         int[] wh = new int[]{0, 0, 0, 0, 0};
-        for (int j = 0; j < 2; j++) {
-            for (int i = 0; i < 8; i++) {
-                if (black[j][i].getIsCaptured() == false) {
-                    if (black[j][i] instanceof Pawn) {
-                        bl[0]++;
-                    } else if (black[j][i] instanceof Rook) {
-                        bl[1]++;
-                    } else if (black[j][i] instanceof Knight) {
-                        bl[2]++;
-                    } else if (black[j][i] instanceof Bishop) {
-                        bl[3]++;
-                    } else if (black[j][i] instanceof Queen) {
-                        bl[4]++;
-                    }
-                }
-                if (white[j][i].getIsCaptured() == false) {
-                    if (white[j][i] instanceof Pawn) {
-                        wh[0]++;
-                    } else if (white[j][i] instanceof Rook) {
-                        wh[1]++;
-                    } else if (white[j][i] instanceof Knight) {
-                        wh[2]++;
-                    } else if (white[j][i] instanceof Bishop) {
-                        wh[3]++;
-                    } else if (white[j][i] instanceof Queen) {
-                        wh[4]++;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+
+                if (board[i][j] != null) {
+                    if (board[i][j] instanceof Pawn || board[i][j] instanceof Queen || board[i][j] instanceof Rook) {
+                        return false;
+                    } else if (board[i][j] instanceof Bishop) {
+                        if (board[i][j].getColor()) {
+                            wh[3]++;
+                        } else {
+                            bl[3]++;
+                        }
+                    } else if (board[i][j] instanceof Knight) {
+                        if (board[i][j].getColor()) {
+                            wh[2]++;
+                        } else {
+                            bl[2]++;
+                        }
                     }
                 }
             }
@@ -564,7 +565,6 @@ public class ChessGame {
                     board[toRow][toColumn].increaseMovesNum();
                 }
             }
-
         }
         if (!ret.equals("Invalid move\n")) {
             lastMoved[0] = toRow;
@@ -594,7 +594,6 @@ public class ChessGame {
         }
 
 //        printBoard();
-
         return ret;
     }
 
