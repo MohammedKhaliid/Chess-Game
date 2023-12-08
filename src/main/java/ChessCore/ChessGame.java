@@ -4,7 +4,7 @@ import ChessCore.Pieces.*;
 
 public class ChessGame {
 
-    private Piece[][] board = new Piece[8][8];
+    private Piece[][] board;
     private boolean gameOver;
     private int[] lastMoved;
     private boolean whiteTurn;
@@ -16,10 +16,6 @@ public class ChessGame {
         lastMoved[1] = -1;
         whiteTurn = true;
         gameOver = false;
-    }
-
-    public static boolean inBoard(int row, int column) {
-        return (row >= 0 && row < 8 && column >= 0 && column < 8);
     }
 
     public boolean getTurn() {
@@ -74,7 +70,7 @@ public class ChessGame {
                     if (board[i][j] == null) {
                         continue;
                     }
-                    if (board[i][j].getColor() != false) {
+                    if (board[i][j].getColor()) {
                         continue;
                     }
                     char[][] danger = this.testAllValidMoves(board[i][j]);
@@ -123,15 +119,15 @@ public class ChessGame {
             }
             for (int i = 0; i < 4; i++) {
                 if (i == 0) {
-                    if (p.getMovesNum() == 0 && ChessGame.inBoard(row + dx[i], column + dy[i]) == true && board[row + dx[i]][column + dy[i]] == null && board[row + dx[i + 1]][column + dy[i + 1]] == null) {
+                    if (p.getMovesNum() == 0 && Calculations.inBoard(row + dx[i], column + dy[i]) == true && board[row + dx[i]][column + dy[i]] == null && board[row + dx[i + 1]][column + dy[i + 1]] == null) {
                         all[row + dx[i]][column + dy[i]] = 't';
                     }
                 } else if (i == 1) {
-                    if (ChessGame.inBoard(row + dx[i], column + dy[i]) && board[row + dx[i]][column + dy[i]] == null) {
+                    if (Calculations.inBoard(row + dx[i], column + dy[i]) && board[row + dx[i]][column + dy[i]] == null) {
                         all[row + dx[i]][column + dy[i]] = 't';
                     }
                 } else {
-                    if (ChessGame.inBoard(row + dx[i], column + dy[i]) && board[row + dx[i]][column + dy[i]] != null && board[row + dx[i]][column + dy[i]].getColor() != p.getColor()) {
+                    if (Calculations.inBoard(row + dx[i], column + dy[i]) && board[row + dx[i]][column + dy[i]] != null && board[row + dx[i]][column + dy[i]].getColor() != p.getColor()) {
                         all[row + dx[i]][column + dy[i]] = 't';
                     }
                 }
@@ -148,14 +144,14 @@ public class ChessGame {
             }
 
             if (lastMoved[0] == row && row == enRow) {
-                if (ChessGame.inBoard(row, column + 1)) {
+                if (Calculations.inBoard(row, column + 1)) {
                     Piece rightNeighbor = board[row][column + 1];
 
                     if (rightNeighbor != null && rightNeighbor.getMovesNum() == 1 && rightNeighbor instanceof Pawn && lastMoved[1] == column + 1) {
                         all[row + enX][column + 1] = 'e';
                     }
                 }
-                if (ChessGame.inBoard(row, column - 1)) {
+                if (Calculations.inBoard(row, column - 1)) {
                     Piece leftNeighbor = board[row][column - 1];
 
                     if (leftNeighbor != null && leftNeighbor.getMovesNum() == 1 && leftNeighbor instanceof Pawn && lastMoved[1] == column - 1) {
@@ -167,7 +163,7 @@ public class ChessGame {
             dx = new int[]{-2, -1, 1, 2, 2, 1, -1, -2};
             dy = new int[]{1, 2, 2, 1, -1, -2, -2, -1};
             for (int i = 0; i < 8; i++) {
-                if (ChessGame.inBoard(row + dx[i], column + dy[i])) {
+                if (Calculations.inBoard(row + dx[i], column + dy[i])) {
                     if (board[row + dx[i]][column + dy[i]] == null || board[row + dx[i]][column + dy[i]].getColor() != p.getColor()) {
                         all[row + dx[i]][column + dy[i]] = 't';
                     }
@@ -178,7 +174,7 @@ public class ChessGame {
             dy = new int[]{0, 0, 1, -1};
             for (int i = 0; i < 4; i++) {
                 for (int j = 1; j < 8; j++) {
-                    if (ChessGame.inBoard(row + (dx[i] * j), column + (dy[i] * j))) {
+                    if (Calculations.inBoard(row + (dx[i] * j), column + (dy[i] * j))) {
                         if (board[row + (dx[i] * j)][column + (dy[i] * j)] == null) {
                             all[row + (dx[i] * j)][column + (dy[i] * j)] = 't';
                         } else if (board[row + (dx[i] * j)][column + (dy[i] * j)].getColor() != p.getColor()) {
@@ -197,7 +193,7 @@ public class ChessGame {
             dy = new int[]{1, -1, 1, -1};
             for (int i = 0; i < 4; i++) {
                 for (int j = 1; j < 8; j++) {
-                    if (ChessGame.inBoard(row + (dx[i] * j), column + (dy[i] * j))) {
+                    if (Calculations.inBoard(row + (dx[i] * j), column + (dy[i] * j))) {
                         if (board[row + (dx[i] * j)][column + (dy[i] * j)] == null) {
                             all[row + (dx[i] * j)][column + (dy[i] * j)] = 't';
                         } else if (board[row + (dx[i] * j)][column + (dy[i] * j)].getColor() != p.getColor()) {
@@ -216,7 +212,7 @@ public class ChessGame {
             dy = new int[]{1, -1, 1, -1, 0, 0, 1, -1};
             for (int i = 0; i < 8; i++) {
                 for (int j = 1; j < 8; j++) {
-                    if (ChessGame.inBoard(row + (dx[i] * j), column + (dy[i] * j))) {
+                    if (Calculations.inBoard(row + (dx[i] * j), column + (dy[i] * j))) {
                         if (board[row + (dx[i] * j)][column + (dy[i] * j)] == null) {
                             all[row + (dx[i] * j)][column + (dy[i] * j)] = 't';
                         } else if (board[row + (dx[i] * j)][column + (dy[i] * j)].getColor() != p.getColor()) {
@@ -234,7 +230,7 @@ public class ChessGame {
             dx = new int[]{1, -1, -1, 1, 1, -1, 0, 0};
             dy = new int[]{1, -1, 1, -1, 0, 0, 1, -1};
             for (int i = 0; i < 8; i++) {
-                if (ChessGame.inBoard(row + dx[i], column + dy[i])) {
+                if (Calculations.inBoard(row + dx[i], column + dy[i])) {
                     if (board[row + dx[i]][column + dy[i]] == null || board[row + dx[i]][column + dy[i]].getColor() != p.getColor()) {
                         all[row + dx[i]][column + dy[i]] = 't';
                     }
@@ -436,35 +432,33 @@ public class ChessGame {
                 }
             }
         }
-        if (wh[0] == 0 && bl[0] == 0 && wh[1] == 0 && bl[1] == 0 && wh[4] == 0 && bl[4] == 0) {
-            if (wh[2] == 0 && bl[2] == 0 && wh[3] == 0 && bl[3] == 0)//lone kings
-            {
-                return true;
-            }
-            if (wh[2] == 1 && bl[2] == 1 && wh[3] == 0 && bl[3] == 0)//knight & king vs knight & king
-            {
-                return true;
-            }
-            if (wh[2] == 0 && bl[2] == 0 && wh[3] == 1 && bl[3] == 1)//Bishop & king vs Bishop & king
-            {
-                return true;
-            }
-            if ((wh[2] == 0 && bl[2] == 0 && wh[3] == 1 && bl[3] == 0) || (wh[2] == 0 && bl[2] == 0 && wh[3] == 0 && bl[3] == 1))//Bishop & king vs lone king
-            {
-                return true;
-            }
-            if ((wh[2] == 1 && bl[2] == 0 && wh[3] == 0 && bl[3] == 0) || (wh[2] == 0 && bl[2] == 1 && wh[3] == 0 && bl[3] == 0))//knight& king vs lone king
-            {
-                return true;
-            }
-            if ((wh[2] == 1 && bl[2] == 0 && wh[3] == 0 && bl[3] == 1) || (wh[2] == 0 && bl[2] == 1 && wh[3] == 1 && bl[3] == 0))//Bishop & king vs knight & king
-            {
-                return true;
-            }
-            if ((wh[2] == 2 && bl[2] == 0 && wh[3] == 0 && bl[3] == 0) || (wh[2] == 0 && bl[2] == 2 && wh[3] == 0 && bl[3] == 0))//2 knight & king vs lone king
-            {
-                return true;
-            }
+        if (wh[2] == 0 && bl[2] == 0 && wh[3] == 0 && bl[3] == 0)//lone kings
+        {
+            return true;
+        }
+        if (wh[2] == 1 && bl[2] == 1 && wh[3] == 0 && bl[3] == 0)//knight & king vs knight & king
+        {
+            return true;
+        }
+        if (wh[2] == 0 && bl[2] == 0 && wh[3] == 1 && bl[3] == 1)//Bishop & king vs Bishop & king
+        {
+            return true;
+        }
+        if ((wh[2] == 0 && bl[2] == 0 && wh[3] == 1 && bl[3] == 0) || (wh[2] == 0 && bl[2] == 0 && wh[3] == 0 && bl[3] == 1))//Bishop & king vs lone king
+        {
+            return true;
+        }
+        if ((wh[2] == 1 && bl[2] == 0 && wh[3] == 0 && bl[3] == 0) || (wh[2] == 0 && bl[2] == 1 && wh[3] == 0 && bl[3] == 0))//knight& king vs lone king
+        {
+            return true;
+        }
+        if ((wh[2] == 1 && bl[2] == 0 && wh[3] == 0 && bl[3] == 1) || (wh[2] == 0 && bl[2] == 1 && wh[3] == 1 && bl[3] == 0))//Bishop & king vs knight & king
+        {
+            return true;
+        }
+        if ((wh[2] == 2 && bl[2] == 0 && wh[3] == 0 && bl[3] == 0) || (wh[2] == 0 && bl[2] == 2 && wh[3] == 0 && bl[3] == 0))//2 knight & king vs lone king
+        {
+            return true;
         }
         return false;
     }
@@ -484,7 +478,7 @@ public class ChessGame {
 
         if (gameOver) {
 
-            return ret = "Game already ended\n";
+            return "Game already ended\n";
         }
         if (promoteTo == 'x') {
             if (movingPiece == null || !movingPiece.isValidMove(from, to) || capturedPiece instanceof King || (whiteTurn && !movingPiece.getColor()) || (!whiteTurn && movingPiece.getColor())) {
@@ -606,7 +600,7 @@ public class ChessGame {
                     System.out.print("null\t");
                 }
             }
-            System.out.println("");
+            System.out.println();
         }
         System.out.println("------------------------------------------------");
     }
