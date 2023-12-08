@@ -369,18 +369,29 @@ public class ChessGUI {
         undoKey = new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
-                
+
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
                 System.out.println(e.getKeyCode());
-                
+
                 System.out.println(e.isControlDown());
 
                 if ((e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Z) || e.getKeyCode() == KeyEvent.VK_LEFT) {
                     System.out.println("Undo key pressed");
                     historyManager.revert(game);
+                    setCurrentRow(-1);
+                    setCurrentColumn(-1);
+                    setIsPromoting(false);
+                    chess.repaint();
+                }
+                if ((e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Y) || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                    System.out.println("Redo key pressed");
+                    historyManager.redo(game);
+                    setCurrentRow(-1);
+                    setCurrentColumn(-1);
+                    setIsPromoting(false);
                     chess.repaint();
                 }
             }
@@ -397,7 +408,8 @@ public class ChessGUI {
 
         if ((!moveState.equals("Invalid move\n") && simulateMove(from, to))
                 || (moveState.equals("Invalid move\n") && simulateMove(from, to))) {
-            historyManager.save(game);
+            historyManager.undoSave(game);
+            historyManager.clearRedo();
             System.out.println("Saved!!");
         }
         moveState = game.move(from, to, promoteTo);

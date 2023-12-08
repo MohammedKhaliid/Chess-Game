@@ -3,19 +3,41 @@ package ChessCore;
 import java.util.Stack;
 
 public class HistoryManager {
-    private Stack<State> states = new Stack<>();
-    
-    public void save(ChessGame game){
-        states.push(game.save());
+
+    private Stack<State> undoStates = new Stack<>();
+    private Stack<State> redoStates = new Stack<>();
+
+    public void undoSave(ChessGame game) {
+        undoStates.push(game.save());
     }
-    
-    public void revert(ChessGame game){
-        if(states.size() == 0)
-        {
+
+    public void revert(ChessGame game) {
+        if (undoStates.isEmpty()) {
             return;
         }
-        game.revert(states.pop());
-        System.out.println("size of stack : "+states.size());
+        redoSave(game);
+        game.revert(undoStates.pop());
+        System.out.println("size of undoStack : " + undoStates.size());
+    }
 
+    public void redoSave(ChessGame game) {
+        redoStates.push(game.save());
+    }
+
+    public void redo(ChessGame game) {
+        if (redoStates.isEmpty()) {
+            return;
+        }
+        undoSave(game);
+        game.revert(redoStates.pop());
+        System.out.println("size of RedoStack : " + redoStates.size());
+    }
+    
+    public void clearRedo()
+    {
+        while(!redoStates.isEmpty())
+        {
+            redoStates.pop();
+        }
     }
 }
