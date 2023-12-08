@@ -1,4 +1,4 @@
-package ChessCore;
+package ChessCore.Pieces;
 
 public abstract class Piece {
     

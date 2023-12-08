@@ -1,5 +1,7 @@
 package ChessCore;
 
+import ChessCore.Pieces.*;
+
 public class BoardInitializer {
 
     public static Piece[][] boardInit() {

@@ -1,5 +1,7 @@
 package ChessCore;
 
+import ChessCore.Pieces.*;
+
 public class StateCopy {
 
     public static Piece[][] copyBoard(Piece[][] board) {
