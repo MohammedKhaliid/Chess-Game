@@ -1,4 +1,4 @@
-package Frontend;
+package GUI;
 
 import ChessCore.*;
 import ChessCore.ChessGame;
@@ -14,16 +14,11 @@ import java.awt.Image;
 import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.Border;
 
 public class ChessGUI {
@@ -115,12 +110,23 @@ public class ChessGUI {
 
     //methods
     private void frameSetup() {
-        chess.setSize(600 + 8 * 2, 600 + 8 * 2);
+        chess.setSize(610 + 8 * 2, 637 + 8 * 2);
         chess.setBackground(Color.BLACK);
         chess.setLocationRelativeTo(null);
-        chess.setUndecorated(true);
+//        chess.setUndecorated(true);   //when you uncomment this make the size (600+8*2, 600+8*2)
+        chess.setResizable(false);
         Border border = BorderFactory.createLineBorder(Color.BLACK, 8);
         chess.getRootPane().setBorder(border);
+        chess.setTitle("Chess Game");
+        ImageIcon icon = new ImageIcon("pawn.png");
+        chess.setIconImage(icon.getImage().getScaledInstance(20,20,Image.SCALE_SMOOTH));
+        chess.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // Call any cleanup or exit logic here if needed
+                System.exit(0);
+            }
+        });
     }
 
     private void boardSetup() {

@@ -1,4 +1,4 @@
-package Frontend;
+package GUI;
 
 import ChessCore.ChessGame;
 import ChessCore.HistoryManager;
