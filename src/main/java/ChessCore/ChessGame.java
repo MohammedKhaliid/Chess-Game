@@ -32,20 +32,17 @@ public class ChessGame {
 
     public State save() {
         State currentState = new State(board, lastMoved, whiteTurn, gameOver);
-        System.out.println("last moved: row: " + lastMoved[1] + " column: " + lastMoved[0]);
 
         return currentState;
     }
 
     public void revert(State prevState) {
-        printBoard();
+//        printBoard();
         this.board = prevState.getBoard();
         this.whiteTurn = prevState.getWhiteTurn();
         this.lastMoved = prevState.getLastMoved();
         this.gameOver = prevState.getGameOver();
-        printBoard();
-        System.out.println(whiteTurn);
-        System.out.println("last moved: row: " + lastMoved[1] + " column: " + lastMoved[0]);
+//        printBoard();
     }
 
     public String getKingPosition(boolean color) {

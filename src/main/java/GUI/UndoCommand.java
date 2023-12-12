@@ -11,7 +11,7 @@ public class UndoCommand implements Command {
     }
 
     public void execute(ChessGame game) {
-        System.out.println("Undo key pressed");
+//        System.out.println("Undo key pressed");
         historyManager.undo(game);
     }
 }

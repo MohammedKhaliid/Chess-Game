@@ -11,7 +11,7 @@ public class RedoCommand implements Command {
     }
 
     public void execute(ChessGame game) {
-        System.out.println("Redo key pressed");
+//        System.out.println("Redo key pressed");
         historyManager.redo(game);
     }
 }

@@ -4,7 +4,7 @@ import ChessCore.Pieces.Piece;
 
 public class State {
 
-    private Piece[][] board, black, white;
+    private Piece[][] board;
     private int[] lastMoved;
     private boolean whiteTurn, gameOver;
 

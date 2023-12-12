@@ -20,7 +20,7 @@ public class HistoryManager {
         }
         redoSave(game);
         game.revert(undoStates.pop());
-        System.out.println("size of undoStack : " + undoStates.size());
+//        System.out.println("size of undoStack : " + undoStates.size());
     }
 
     public void redo(ChessGame game) {
@@ -29,7 +29,7 @@ public class HistoryManager {
         }
         undoSave(game);
         game.revert(redoStates.pop());
-        System.out.println("size of RedoStack : " + redoStates.size());
+//        System.out.println("size of RedoStack : " + redoStates.size());
     }
     
     public void clearRedo()

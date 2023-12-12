@@ -410,13 +410,13 @@ public class ChessGUI {
 
     private void moveGUI(String from, String to, char promoteTo) {
 
-        System.out.println(moveState);
+//        System.out.println(moveState);
 
         if ((!moveState.equals("Invalid move\n") && simulateMove(from, to))
                 || (moveState.equals("Invalid move\n") && simulateMove(from, to))) {
             historyManager.undoSave(game);
             historyManager.clearRedo();
-            System.out.println("Saved!!");
+//            System.out.println("Saved!!");
         }
         moveState = game.move(from, to, promoteTo);
         //handling invalid moves
