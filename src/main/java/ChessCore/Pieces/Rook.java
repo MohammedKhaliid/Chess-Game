@@ -15,15 +15,11 @@ public class Rook extends Piece {
         int x = relativePos[0];
         int y = relativePos[1];
 
-        if ((x == 0 || y == 0) && (x != 0 || y != 0)) //forward/backward/right/left/moves
-        {
-            return true;
-        }
-
-        return false;
+        //forward/backward/right/left/moves
+        return (x == 0 || y == 0) && (x != 0 || y != 0);
     }
-    public String toString()
-    {
+
+    public String toString() {
         return "Rook";
     }
 }

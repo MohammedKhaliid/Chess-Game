@@ -4,7 +4,7 @@ import ChessCore.ChessGame;
 import ChessCore.HistoryManager;
 
 public class UndoCommand implements Command {
-    private HistoryManager historyManager;
+    private final HistoryManager historyManager;
 
     public UndoCommand(HistoryManager historyManager) {
         this.historyManager = historyManager;

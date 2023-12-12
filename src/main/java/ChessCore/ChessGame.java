@@ -83,7 +83,7 @@ public class ChessGame {
                     if (board[i][j] == null) {
                         continue;
                     }
-                    if (board[i][j].getColor() != true) {
+                    if (!board[i][j].getColor()) {
                         continue;
                     }
                     char[][] danger = this.testAllValidMoves(board[i][j]);
@@ -106,7 +106,7 @@ public class ChessGame {
         int[] dy;
         // is instanceof() then check
         if (p instanceof Pawn) {
-            if (p.getColor() == true)//white
+            if (p.getColor())//white
             {
                 dx = new int[]{2, 1, 1, 1};
                 dy = new int[]{0, 0, 1, -1};
@@ -116,7 +116,7 @@ public class ChessGame {
             }
             for (int i = 0; i < 4; i++) {
                 if (i == 0) {
-                    if (p.getMovesNum() == 0 && Calculations.inBoard(row + dx[i], column + dy[i]) == true && board[row + dx[i]][column + dy[i]] == null && board[row + dx[i + 1]][column + dy[i + 1]] == null) {
+                    if (p.getMovesNum() == 0 && Calculations.inBoard(row + dx[i], column + dy[i]) && board[row + dx[i]][column + dy[i]] == null && board[row + dx[i + 1]][column + dy[i + 1]] == null) {
                         all[row + dx[i]][column + dy[i]] = 't';
                     }
                 } else if (i == 1) {
@@ -132,7 +132,7 @@ public class ChessGame {
 
             //EN PaaaaassSsssaaaAaannnNnnT
             int enRow, enX;
-            if (p.getColor() == true) {
+            if (p.getColor()) {
                 enRow = 4;
                 enX = 1;
             } else {
@@ -265,7 +265,7 @@ public class ChessGame {
                         {
                             board[row][column] = null;
                         }
-                        if ((p.getColor() == true && this.isKingSafe('b') == false) || (p.getColor() == false && this.isKingSafe('w') == false)) {
+                        if ((p.getColor() && !this.isKingSafe('b')) || (!p.getColor() && !this.isKingSafe('w'))) {
                             all[row][column - 2] = all[row][column - 4] = 'f';
                             board[row][column - i] = null;
                             p.setPosition(Calculations.reverseCalcPosition(row, column));
@@ -286,7 +286,7 @@ public class ChessGame {
                         {
                             board[row][column] = null;
                         }
-                        if ((p.getColor() == true && this.isKingSafe('b') == false) || (p.getColor() == false && this.isKingSafe('w') == false)) {
+                        if ((p.getColor() && !this.isKingSafe('b')) || (!p.getColor() && !this.isKingSafe('w'))) {
                             all[row][column + 2] = all[row][column + 3] = 'f';
                             board[row][7 - i] = null;
                             p.setPosition(Calculations.reverseCalcPosition(row, column));
@@ -312,18 +312,18 @@ public class ChessGame {
                     board[i][j] = p;
                     board[row][column] = null;
                     if (all[i][j] == 'e') {
-                        if (p.getColor() == true) {
+                        if (p.getColor()) {
                             board[i - 1][j].setIsCaptured(true);
                         } else {
                             board[i + 1][j].setIsCaptured(true);
 
                         }
                     }
-                    if ((p.getColor() == true && this.isKingSafe('b') == false) || (p.getColor() == false && this.isKingSafe('w') == false)) {
+                    if ((p.getColor() && !this.isKingSafe('b')) || (!p.getColor() && !this.isKingSafe('w'))) {
                         all[i][j] = 'f';
                     }
                     if (all[i][j] == 'e') {
-                        if (p.getColor() == true) {
+                        if (p.getColor()) {
                             board[i - 1][j].setIsCaptured(false);
                         } else {
                             board[i + 1][j].setIsCaptured(false);
@@ -453,11 +453,8 @@ public class ChessGame {
         {
             return true;
         }
-        if ((wh[2] == 2 && bl[2] == 0 && wh[3] == 0 && bl[3] == 0) || (wh[2] == 0 && bl[2] == 2 && wh[3] == 0 && bl[3] == 0))//2 knight & king vs lone king
-        {
-            return true;
-        }
-        return false;
+        //2 knight & king vs lone king
+        return (wh[2] == 2 && bl[2] == 0 && wh[3] == 0 && bl[3] == 0) || (wh[2] == 0 && bl[2] == 2 && wh[3] == 0 && bl[3] == 0);
     }
 
     public String move(String from, String to, char promoteTo) {
@@ -492,7 +489,7 @@ public class ChessGame {
                         movingPiece.increaseMovesNum();
                         board[toRow][toColumn] = movingPiece;
                         board[fromRow][fromColumn] = null;
-                        if (whiteTurn == true) {
+                        if (whiteTurn) {
                             board[toRow - 1][toColumn].setIsCaptured(true);
                             board[toRow - 1][toColumn] = null;
                         } else {

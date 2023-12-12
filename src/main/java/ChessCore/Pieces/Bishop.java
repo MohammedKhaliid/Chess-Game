@@ -14,16 +14,11 @@ public class Bishop extends Piece {
         int x = relativePos[0];
         int y = relativePos[1];
 
-        if (Math.abs(x) == Math.abs(y) && x != 0) //Diagnoal move
-        {
-            return true;
-        }
-
-        return false;
+        //Diagnoal move
+        return Math.abs(x) == Math.abs(y) && x != 0;
     }
-    
-    public String toString()
-    {
+
+    public String toString() {
         return "Bishop";
     }
 }

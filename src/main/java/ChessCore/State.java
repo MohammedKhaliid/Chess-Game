@@ -4,11 +4,12 @@ import ChessCore.Pieces.Piece;
 
 public class State {
 
-    private Piece[][] board;
-    private int[] lastMoved;
-    private boolean whiteTurn, gameOver;
+    private final Piece[][] board;
+    private final int[] lastMoved;
+    private final boolean whiteTurn;
+    private final boolean gameOver;
 
-    public State(Piece[][] board,int[] lastMoved, boolean whiteTurn, boolean gameOver) {
+    public State(Piece[][] board, int[] lastMoved, boolean whiteTurn, boolean gameOver) {
         this.board = StateCopy.copyBoard(board);
         this.lastMoved = StateCopy.copyLastMoved(lastMoved);
         this.whiteTurn = whiteTurn;

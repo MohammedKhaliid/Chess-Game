@@ -4,7 +4,7 @@ import ChessCore.ChessGame;
 import ChessCore.HistoryManager;
 
 public class RedoCommand implements Command {
-    private HistoryManager historyManager;
+    private final HistoryManager historyManager;
 
     public RedoCommand(HistoryManager historyManager) {
         this.historyManager = historyManager;

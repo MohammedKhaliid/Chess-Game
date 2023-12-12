@@ -14,14 +14,10 @@ public class Knight extends Piece {
         int x = Math.abs(relativePos[0]);
         int y = Math.abs(relativePos[1]);
 
-        if ((x == 1 || y == 1) && (x == 2 || y == 2))
-        {
-            return true;
-        }
-        return false;
+        return (x == 1 || y == 1) && (x == 2 || y == 2);
     }
-    public String toString()
-    {
+
+    public String toString() {
         return "Knight";
     }
 }

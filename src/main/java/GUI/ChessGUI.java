@@ -1,25 +1,20 @@
 package GUI;
 
-import ChessCore.*;
+import ChessCore.BoardInitializer;
+import ChessCore.Calculations;
 import ChessCore.ChessGame;
+import ChessCore.HistoryManager;
 import ChessCore.Pieces.King;
 import ChessCore.Pieces.Pawn;
 import ChessCore.Pieces.Piece;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.RadialGradientPaint;
-import java.awt.RenderingHints;
-import java.awt.Toolkit;
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import javax.swing.*;
-import javax.swing.border.Border;
 
 public class ChessGUI {
 
@@ -76,10 +71,11 @@ public class ChessGUI {
         return promotionColumn;
     }
 
-    public void setCommand(Command command){
+    public void setCommand(Command command) {
         this.command = command;
     }
-    public void pressKey(){
+
+    public void pressKey() {
         command.execute(game);
         setCurrentRow(-1);
         setCurrentColumn(-1);
@@ -119,7 +115,7 @@ public class ChessGUI {
         chess.getRootPane().setBorder(border);
         chess.setTitle("Chess Game");
         ImageIcon icon = new ImageIcon("pawn.png");
-        chess.setIconImage(icon.getImage().getScaledInstance(20,20,Image.SCALE_SMOOTH));
+        chess.setIconImage(icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
         chess.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -208,9 +204,9 @@ public class ChessGUI {
                     String pieceImage = "";
 
                     if (p.getColor()) {
-                        pieceImage = "White" + p.toString();
+                        pieceImage = "White" + p;
                     } else {
-                        pieceImage = "Black" + p.toString();
+                        pieceImage = "Black" + p;
                     }
 
                     if (p instanceof King) {
@@ -230,7 +226,7 @@ public class ChessGUI {
                 }
             }
         }
-        if (getIsPromoting() == true) {
+        if (getIsPromoting()) {
             String[] pieces = new String[]{"Queen", "Knight", "Rook", "Bishop"};
             Image image;
             for (int i = 0; i < 4; i++) {
@@ -299,14 +295,14 @@ public class ChessGUI {
                     if (selectedPiece != null) {
                         validMoves = game.allValidMoves(selectedPiece);
                     }
-                    if (selectedPiece instanceof Pawn && getIsPromoting() == false
+                    if (selectedPiece instanceof Pawn && !getIsPromoting()
                             && ((selectedPiece.getColor() && validMoves[7 - e.getY() / SIDE_LENGTH][e.getX() / SIDE_LENGTH] != 'f' && 7 - e.getY() / SIDE_LENGTH == 7)
                             || (!selectedPiece.getColor() && validMoves[e.getY() / SIDE_LENGTH][7 - e.getX() / SIDE_LENGTH] != 'f' && 7 - e.getY() / SIDE_LENGTH == 7))) {
                         setPromotionRow(e.getY() / SIDE_LENGTH);
                         setPromotionColumn(e.getX() / SIDE_LENGTH);
                         setIsPromoting(true);
                         chess.repaint();
-                    } else if (getIsPromoting() == false) {
+                    } else if (!getIsPromoting()) {
                         if (game.getTurn() || !withFlip) {
                             moveGUI(Calculations.reverseCalcPosition(7 - getCurrentRow(), getCurrentColumn()),
                                     Calculations.reverseCalcPosition(7 - e.getY() / SIDE_LENGTH, e.getX() / SIDE_LENGTH));
@@ -328,7 +324,7 @@ public class ChessGUI {
                                         Calculations.reverseCalcPosition(7, e.getX() / SIDE_LENGTH), prom);
                             } else {
                                 moveGUI(Calculations.reverseCalcPosition(getCurrentRow(), 7 - getCurrentColumn()),
-                                        Calculations.reverseCalcPosition(7 - 7, 7 - e.getX() / SIDE_LENGTH), prom);
+                                        Calculations.reverseCalcPosition(0, 7 - e.getX() / SIDE_LENGTH), prom);
                             }
 
                         } else if (c == getPromotionColumn() && r == 6) {
@@ -338,7 +334,7 @@ public class ChessGUI {
                                         Calculations.reverseCalcPosition(7, e.getX() / SIDE_LENGTH), prom);
                             } else {
                                 moveGUI(Calculations.reverseCalcPosition(getCurrentRow(), 7 - getCurrentColumn()),
-                                        Calculations.reverseCalcPosition(7 - 7, 7 - e.getX() / SIDE_LENGTH), prom);
+                                        Calculations.reverseCalcPosition(0, 7 - e.getX() / SIDE_LENGTH), prom);
                             }
                         } else if (c == getPromotionColumn() && r == 5) {
                             prom = 'r';
@@ -347,7 +343,7 @@ public class ChessGUI {
                                         Calculations.reverseCalcPosition(7, e.getX() / SIDE_LENGTH), prom);
                             } else {
                                 moveGUI(Calculations.reverseCalcPosition(getCurrentRow(), 7 - getCurrentColumn()),
-                                        Calculations.reverseCalcPosition(7 - 7, 7 - e.getX() / SIDE_LENGTH), prom);
+                                        Calculations.reverseCalcPosition(0, 7 - e.getX() / SIDE_LENGTH), prom);
                             }
                         } else if (c == getPromotionColumn() && r == 4) {
                             prom = 'b';
@@ -356,7 +352,7 @@ public class ChessGUI {
                                         Calculations.reverseCalcPosition(7, e.getX() / SIDE_LENGTH), prom);
                             } else {
                                 moveGUI(Calculations.reverseCalcPosition(getCurrentRow(), 7 - getCurrentColumn()),
-                                        Calculations.reverseCalcPosition(7 - 7, 7 - e.getX() / SIDE_LENGTH), prom);
+                                        Calculations.reverseCalcPosition(0, 7 - e.getX() / SIDE_LENGTH), prom);
                             }
                         }
                         setCurrentRow(-1);
@@ -391,7 +387,9 @@ public class ChessGUI {
 
         undoKey = new KeyListener() {
             @Override
-            public void keyTyped(KeyEvent e) {}
+            public void keyTyped(KeyEvent e) {
+            }
+
             @Override
             public void keyPressed(KeyEvent e) {
                 if ((e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Z) || e.getKeyCode() == KeyEvent.VK_LEFT) {
@@ -403,8 +401,10 @@ public class ChessGUI {
                     pressKey();
                 }
             }
+
             @Override
-            public void keyReleased(KeyEvent e) {}
+            public void keyReleased(KeyEvent e) {
+            }
         };
     }
 
@@ -441,10 +441,7 @@ public class ChessGUI {
             return false;
         }
         canMoveToBoard = game.allValidMoves(movingPiece);
-        if (canMoveToBoard[toRow][toColumn] == 'f') {
-            return false;
-        }
-        return true;
+        return canMoveToBoard[toRow][toColumn] != 'f';
     }
 
     public void run() {

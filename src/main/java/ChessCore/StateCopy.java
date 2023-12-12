@@ -10,23 +10,17 @@ public class StateCopy {
             for (int j = 0; j < 8; j++) {
                 if (board[i][j] instanceof Pawn) {
                     newBoard[i][j] = new Pawn(board[i][j].getPosition(), board[i][j].getColor());
-                }
-                else if (board[i][j] instanceof Queen) {
+                } else if (board[i][j] instanceof Queen) {
                     newBoard[i][j] = new Queen(board[i][j].getPosition(), board[i][j].getColor());
-                }
-                else if (board[i][j] instanceof Rook) {
+                } else if (board[i][j] instanceof Rook) {
                     newBoard[i][j] = new Rook(board[i][j].getPosition(), board[i][j].getColor());
-                }
-                else if (board[i][j] instanceof Bishop) {
+                } else if (board[i][j] instanceof Bishop) {
                     newBoard[i][j] = new Bishop(board[i][j].getPosition(), board[i][j].getColor());
-                }
-                else if (board[i][j] instanceof Knight) {
+                } else if (board[i][j] instanceof Knight) {
                     newBoard[i][j] = new Knight(board[i][j].getPosition(), board[i][j].getColor());
-                }
-                else if (board[i][j] instanceof King) {
+                } else if (board[i][j] instanceof King) {
                     newBoard[i][j] = new King(board[i][j].getPosition(), board[i][j].getColor());
-                }
-                else{
+                } else {
                     newBoard[i][j] = null;
                     continue;
                 }
@@ -35,13 +29,13 @@ public class StateCopy {
         }
         return newBoard;
     }
-    
-    public static int[] copyLastMoved(int [] lastMoved){
+
+    public static int[] copyLastMoved(int[] lastMoved) {
         int[] newLastMoved = new int[2];
         newLastMoved[0] = lastMoved[0];
         newLastMoved[1] = lastMoved[1];
 
         return newLastMoved;
     }
-    
+
 }

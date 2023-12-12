@@ -4,8 +4,8 @@ import java.util.Stack;
 
 public class HistoryManager {
 
-    private Stack<State> undoStates = new Stack<>();
-    private Stack<State> redoStates = new Stack<>();
+    private final Stack<State> undoStates = new Stack<>();
+    private final Stack<State> redoStates = new Stack<>();
 
     public void undoSave(ChessGame game) {
         undoStates.push(game.save());
@@ -14,6 +14,7 @@ public class HistoryManager {
     public void redoSave(ChessGame game) {
         redoStates.push(game.save());
     }
+
     public void undo(ChessGame game) {
         if (undoStates.isEmpty()) {
             return;
@@ -31,11 +32,9 @@ public class HistoryManager {
         game.revert(redoStates.pop());
 //        System.out.println("size of RedoStack : " + redoStates.size());
     }
-    
-    public void clearRedo()
-    {
-        while(!redoStates.isEmpty())
-        {
+
+    public void clearRedo() {
+        while (!redoStates.isEmpty()) {
             redoStates.pop();
         }
     }

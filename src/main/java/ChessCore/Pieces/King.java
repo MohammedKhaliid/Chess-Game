@@ -22,12 +22,8 @@ public class King extends Piece {
 
         }
 
-        if (Math.abs(x) == 1 && Math.abs(y) == 1) //Diagnoally forward move (one step)
-        {
-            return true;
-        }
-
-        return false;
+        //Diagnoally forward move (one step)
+        return Math.abs(x) == 1 && Math.abs(y) == 1;
     }
 
     public String toString() {
